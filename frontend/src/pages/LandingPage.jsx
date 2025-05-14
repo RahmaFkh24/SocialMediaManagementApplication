@@ -75,7 +75,7 @@ const LandingPage = () => {
           <p className="text-lg md:text-xl text-muted-foreground mb-8">
             Social Pulse is the all-in-one solution to effectively manage all your social media accounts. Create, schedule, organize, analyze, and automate your posts from one place.
           </p>
-          <Link to="/signup">
+          <Link to="https://buy.stripe.com/test_7sYaEWgSD8cOcWF8Lz2oE00">
             <Button size="lg" className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white shadow-lg transform hover:scale-105 transition-transform duration-300">
               <Rocket className="mr-2 h-5 w-5" /> Start Your 7-Day Free Trial
             </Button>
@@ -156,7 +156,8 @@ const LandingPage = () => {
         </motion.section>
 
       </motion.main>
-      <LandingFooter /> {/* Add Footer */}
+      <LandingFooter />
+
     </div>
   );
 };
