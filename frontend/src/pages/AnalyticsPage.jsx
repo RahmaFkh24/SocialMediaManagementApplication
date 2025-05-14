@@ -1,72 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import OverviewTab from '@/pages/analytics/OverviewTab';
+import EngagementTab from '@/pages/analytics/EngagementTab';
+import AudienceTab from '@/pages/analytics/AudienceTab';
+import ContentTab from '@/pages/analytics/ContentTab';
+import { BarChart3, TrendingUp, Users, FileText } from 'lucide-react';
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+};
 
 const AnalyticsPage = () => {
-    const [data, setData] = useState(null);
-    const [error, setError] = useState(null);
-
-    const fetchWithHandling = async (url) => {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error.message || 'API request failed');
-            }
-            return await response.json();
-        } catch (err) {
-            setError(err.message);
-            throw err;
-        }
-    };
-
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const [overview, engagement] = await Promise.all([
-                    fetchWithHandling('http://localhost:5000/api/analytics/overview'),
-                    fetchWithHandling('http://localhost:5000/api/analytics/engagement')
-                ]);
-
-                setData({ overview, engagement });
-            } catch (err) {
-                console.error('Fetch error:', err);
-            }
-        };
-
-        loadData();
-    }, []);
-
-    if (error) return <div className="error">Error: {error}</div>;
-    if (!data) return <div className="loading">Loading...</div>;
-
     return (
-        <div className="analytics-container">
-            <h1>Analytics Dashboard</h1>
+        <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-6"
+        >
+            <motion.div variants={itemVariants} className="flex justify-between items-center">
+                <h1 className="text-3xl font-bold tracking-tight">Social Media Analytics</h1>
+            </motion.div>
 
-            <div className="metrics">
-                <div className="metric-card">
-                    <h3>Followers</h3>
-                    <p>{data.overview.totalFollowers}</p>
-                </div>
-                <div className="metric-card">
-                    <h3>Engagement Rate</h3>
-                    <p>{data.overview.engagementRate}%</p>
-                </div>
-            </div>
+            <Tabs defaultValue="overview" className="w-full">
+                <motion.div variants={itemVariants}>
+                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-2 bg-muted p-1 rounded-lg">
+                        <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                            <BarChart3 className="h-4 w-4" /> Overview
+                        </TabsTrigger>
+                        <TabsTrigger value="engagement" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                            <TrendingUp className="h-4 w-4" /> Engagement
+                        </TabsTrigger>
+                        <TabsTrigger value="audience" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                            <Users className="h-4 w-4" /> Audience
+                        </TabsTrigger>
+                        <TabsTrigger value="content" className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                            <FileText className="h-4 w-4" /> Content
+                        </TabsTrigger>
+                    </TabsList>
+                </motion.div>
 
-            <div className="chart">
-                <h2>Engagement Metrics</h2>
-                <BarChart width={600} height={300} data={[data.engagement]}>
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Bar dataKey="likes" fill="#8884d8" />
-                    <Bar dataKey="comments" fill="#82ca9d" />
-                    <Bar dataKey="shares" fill="#ffc658" />
-                    <Tooltip />
-                    <Legend />
-                </BarChart>
-            </div>
-        </div>
+                <motion.div variants={itemVariants} className="mt-6">
+                    <TabsContent value="overview">
+                        <OverviewTab />
+                    </TabsContent>
+                    <TabsContent value="engagement">
+                        <EngagementTab />
+                    </TabsContent>
+                    <TabsContent value="audience">
+                        <AudienceTab />
+                    </TabsContent>
+                    <TabsContent value="content">
+                        <ContentTab />
+                    </TabsContent>
+                </motion.div>
+            </Tabs>
+        </motion.div>
     );
 };
 

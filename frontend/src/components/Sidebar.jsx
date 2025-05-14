@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, CalendarClock, BarChart2, Link2, Settings, LogOut, Facebook, FileText, CalendarDays, Image as ImageIcon } from 'lucide-react'; // Added CalendarDays, ImageIcon
+import { LayoutDashboard, CalendarClock, Zap, BarChart2, Link2, Settings, LogOut, FileText, CalendarDays, Image as ImageIcon } from 'lucide-react'; // Added CalendarDays, ImageIcon
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
@@ -46,18 +46,16 @@ const Sidebar = () => {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: 'spring' }}
+          className="p-3 bg-primary/10 rounded-full shadow-lg"
+
         >
-          {/* Consider a more generic or app-specific logo */}
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-10 w-10 text-primary">
-            <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-            <line x1="6" x2="6" y1="1" y2="4" />
-            <line x1="10" x2="10" y1="1" y2="4" />
-            <line x1="14" x2="14" y1="1" y2="4" />
-          </svg>
+          <Zap className="h-10 w-10 text-primary" />
+
         </motion.div>
-        <h1 className="text-2xl font-bold ml-2 text-primary">Sociable</h1>
+
+        <h1 className="text-2xl font-bold ml-3 text-primary">Social Pulse</h1>
       </div>
+
       <nav className="flex-grow">
         <ul>
           {navItems.map((item, index) => (

@@ -1,15 +1,3 @@
-/*
-
-for the login after login successfully , it redirect to the login page
-but when i refresh it few times it redirect to the dashboard page
-
-fix this error
-
-
-
-
-
-*/
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';

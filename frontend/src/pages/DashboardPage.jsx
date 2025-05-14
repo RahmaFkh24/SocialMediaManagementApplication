@@ -251,39 +251,45 @@ const DashboardPage = () => {
 
         </div>
 
-        {/* Best Time to Post Section */}
         <motion.div
           variants={itemVariants}
           initial="hidden"
           animate="visible"
           transition={{ delay: 0.3 }}
-          className="lg:col-span-1"
+          className="lg:col-span-1 max-h-[350px]"
         >
           <Card className="h-full flex flex-col bg-gradient-to-br from-primary/10 to-secondary/10">
-            <CardHeader>
-              <CardTitle className="flex items-center text-primary">
-                <Lightbulb className="mr-2 h-5 w-5" /> Best Times to Post
+            <CardHeader className="py-3 px-4">
+              <CardTitle className="flex items-center text-primary text-base">
+                <Lightbulb className="mr-2 h-4 w-4" />
+                Best Times to Post
               </CardTitle>
-              <CardDescription>Based on your recent engagement data.</CardDescription>
+              <CardDescription className="text-xs">
+                Based on your recent engagement data.
+              </CardDescription>
             </CardHeader>
-            <CardContent className="flex-grow flex flex-col justify-center">
+
+            <CardContent className="flex-grow px-4 pb-4 overflow-y-auto space-y-2">
               <motion.div
-                className="space-y-3"
+                className="space-y-2"
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
                 transition={{ delay: 0.5, staggerChildren: 0.15 }}
               >
-                {bestTimes.map((slot, index) => (
+                {bestTimes.slice(0, 4).map((slot, index) => (
                   <motion.div
                     key={index}
                     variants={bestTimeItemVariants}
                     whileHover="hover"
-                    className="flex items-center space-x-3 p-3 rounded-md cursor-default transition-colors duration-200 border border-transparent hover:border-primary/20"
+                    className="flex items-center space-x-3 p-2 rounded-md cursor-default transition-colors duration-200 border border-transparent hover:border-primary/20"
                   >
-                    <slot.icon className="h-6 w-6 text-primary flex-shrink-0" />
+                    <slot.icon className="h-5 w-5 text-primary flex-shrink-0" />
                     <div>
-                      <p className="font-semibold text-foreground">{slot.time} <span className="text-muted-foreground text-xs">({slot.day})</span></p>
+                      <p className="font-medium text-sm text-foreground">
+                        {slot.time}{" "}
+                        <span className="text-muted-foreground text-xs">({slot.day})</span>
+                      </p>
                       <p className="text-xs text-muted-foreground">{slot.reason}</p>
                     </div>
                   </motion.div>
