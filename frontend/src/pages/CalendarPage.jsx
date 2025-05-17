@@ -1,250 +1,242 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Calendar as BigCalendar, Views } from 'react-big-calendar';
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 
-    import React, { useState, useCallback } from 'react';
-    import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
-    import format from 'date-fns/format';
-    import parse from 'date-fns/parse';
-    import startOfWeek from 'date-fns/startOfWeek';
-    import getDay from 'date-fns/getDay';
-    import enUS from 'date-fns/locale/en-US';
-    import { motion } from 'framer-motion';
-    import { Button } from '@/components/ui/button';
-    import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-    import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"; // Use Dialog for modal
-    import { Badge } from "@/components/ui/badge"; // Import Badge
-    import { Facebook, Instagram, Twitter, Linkedin, PlusCircle, CalendarDays, Image as ImageIcon, CheckCircle, Clock, Trash2, Edit, BarChart2 } from 'lucide-react';
-    import { useNavigate } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
+import { useCalendarEvents } from '@/pages/CalendarPage/hooks/useCalendarEvents';
+import { useCalendarState } from '@/pages/CalendarPage/hooks/useCalendarState';
+import { localizer, calendarMessages, calendarFormats } from '@/pages/CalendarPage/calendarUtils';
+import CustomEvent from '@/pages/CalendarPage/CustomEvent';
+import CalendarToolbar from '@/pages/CalendarPage/CalendarToolbar';
+import CalendarHeader from '@/pages/CalendarPage/components/CalendarHeader';
+import UpcomingPostsSidebar from '@/pages/CalendarPage/UpcomingPostsSidebar';
+import StatusSummarySidebar from '@/pages/CalendarPage/StatusSummarySidebar';
+import EventDetailsModal from '@/pages/CalendarPage/EventDetailsModal';
+import ConfirmDeleteDialog from '@/pages/CalendarPage/ConfirmDeleteDialog';
 
-    const locales = {
-      'en-US': enUS,
-    };
+const DnDCalendar = withDragAndDrop(BigCalendar);
 
-    const localizer = dateFnsLocalizer({
-      format,
-      parse,
-      startOfWeek,
-      getDay,
-      locales,
-    });
+const CalendarPage = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-    // Mock Events Data
-    const initialEvents = [
-      {
-        id: 1,
-        title: 'FB Post: New product launch details...',
-        start: new Date(2025, 4, 2, 10, 0, 0), // May 2, 2025 10:00 AM
-        end: new Date(2025, 4, 2, 10, 30, 0), // May 2, 2025 10:30 AM
-        platform: 'facebook',
-        status: 'Published',
-        hasMedia: true,
-      },
-      {
-        id: 2,
-        title: 'IG Story: Team event highlights...',
-        start: new Date(2025, 4, 5, 15, 0, 0), // May 5, 2025 3:00 PM
-        end: new Date(2025, 4, 5, 15, 15, 0),
-        platform: 'instagram',
-        status: 'Scheduled',
-        hasMedia: true,
-      },
-      {
-         id: 3,
-         title: 'Twitter: Webinar reminder tweet...',
-         start: new Date(2025, 4, 8, 14, 0, 0),
-         end: new Date(2025, 4, 8, 14, 10, 0),
-         platform: 'twitter',
-         status: 'Scheduled',
-         hasMedia: false,
-       },
-        {
-         id: 4,
-         title: 'LinkedIn: Article share about industry trends...',
-         start: new Date(2025, 4, 10, 9, 0, 0),
-         end: new Date(2025, 4, 10, 9, 30, 0),
-         platform: 'linkedin',
-         status: 'Published',
-         hasMedia: false,
-       },
-    ];
+  const {
+    events,
+    setEvents,
+    filteredEvents,
+    searchTerm,
+    setSearchTerm,
+    selectedPlatforms,
+    setSelectedPlatforms,
+  } = useCalendarEvents();
 
-    const platformConfig = {
-        facebook: { icon: Facebook, colorClass: 'platform-facebook' },
-        instagram: { icon: Instagram, colorClass: 'platform-instagram' },
-        twitter: { icon: Twitter, colorClass: 'platform-twitter' },
-        linkedin: { icon: Linkedin, colorClass: 'platform-linkedin' },
-    };
+  const {
+    currentDate,
+    setCurrentDate,
+    currentView,
+    setCurrentView,
+    selectedEvent,
+    setSelectedEvent,
+    isModalOpen,
+    setIsModalOpen,
+    isConfirmDeleteOpen,
+    setIsConfirmDeleteOpen,
+    eventToDelete,
+    setEventToDelete,
+    isDragConfirmOpen,
+    setIsDragConfirmOpen,
+    draggedEventInfo,
+    setDraggedEventInfo,
+  } = useCalendarState();
 
-    // Custom Event Component
-    const EventComponent = ({ event }) => {
-      const platformInfo = platformConfig[event.platform] || {};
-      const StatusIcon = event.status === 'Published' ? CheckCircle : Clock;
+  const handlePlatformToggle = React.useCallback((platformId) => {
+    setSelectedPlatforms(prev => ({ ...prev, [platformId]: !prev[platformId] }));
+  }, [setSelectedPlatforms]);
 
-      return (
-        <div className="flex flex-col h-full justify-between text-xs">
-           <span className="rbc-event-label">{event.title}</span>
-           <div className="flex items-center justify-end space-x-1 mt-1 opacity-80">
-                {event.hasMedia && <ImageIcon size={12} />}
-                <StatusIcon size={12} className={event.status === 'Published' ? 'text-green-600' : 'text-blue-600'} />
-                {platformInfo.icon && <platformInfo.icon size={12} />}
-           </div>
-        </div>
+  const handleDeleteEvent = React.useCallback((eventId) => {
+    const event = events.find(e => e.id === eventId);
+    if (event) {
+      setEventToDelete(event);
+      setIsConfirmDeleteOpen(true);
+      setIsModalOpen(false);
+    }
+  }, [events, setIsConfirmDeleteOpen, setEventToDelete, setIsModalOpen]);
+
+  const confirmDelete = React.useCallback(() => {
+    if (eventToDelete) {
+      const updatedEvents = events.filter(e => e.id !== eventToDelete.id);
+      setEvents(updatedEvents);
+      toast({
+        title: 'Post Deleted',
+        description: "${eventToDelete.title}",
+        variant: 'destructive',
+      });
+      setSelectedEvent(null);
+      setIsConfirmDeleteOpen(false);
+      setEventToDelete(null);
+    }
+  }, [eventToDelete, events, setEvents, toast, setSelectedEvent, setIsConfirmDeleteOpen, setEventToDelete]);
+
+  const handleSelectEvent = React.useCallback((event) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
+  }, [setSelectedEvent, setIsModalOpen]);
+
+  const handleNavigate = React.useCallback((newDate) => {
+    setCurrentDate(newDate);
+  }, [setCurrentDate]);
+
+  const handleViewChange = React.useCallback((newView) => {
+    setCurrentView(newView);
+  }, [setCurrentView]);
+
+  const onEventDrop = React.useCallback(({ event, start, end, isAllDay }) => {
+    setDraggedEventInfo({ event, start, end, isAllDay });
+    setIsDragConfirmOpen(true);
+  }, [setDraggedEventInfo, setIsDragConfirmOpen]);
+
+  const confirmEventDrop = React.useCallback(() => {
+    if (draggedEventInfo) {
+      const { event, start, end } = draggedEventInfo;
+      const updatedEvents = events.map(existingEvent =>
+        existingEvent.id === event.id ? { ...existingEvent, start, end } : existingEvent
       );
-    };
+      setEvents(updatedEvents);
+      toast({
+        title: 'Post Rescheduled',
+        description: "${event.title}",
+      });
+    }
+    setIsDragConfirmOpen(false);
+    setDraggedEventInfo(null);
+  }, [draggedEventInfo, events, setEvents, toast, setIsDragConfirmOpen, setDraggedEventInfo]);
 
-    // Custom Toolbar (Optional - react-big-calendar's default is okay to start)
+  const eventPropGetter = React.useCallback(
+    (event) => {
+      const platformConfig = {
+        Facebook: 'facebook',
+        Instagram: 'instagram',
+        LinkedIn: 'linkedin',
+        Twitter: 'twitter',
+      };
+      const platformClass = platformConfig[event.platform] || 'default-platform';
+      return {
+        className: platformClass,
+      };
+    },
+    []
+  );
 
+  return (
+    <div className="flex flex-col lg:flex-row gap-4 md:gap-6 h-full p-3 sm:p-4 md:p-3 bg-background">
+      <motion.div
+        className="flex-grow lg:order-1 flex flex-col"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <CalendarHeader
+          onNewPost={() => navigate('/schedule')}
+          selectedPlatforms={selectedPlatforms}
+          onPlatformToggle={handlePlatformToggle}
+          searchTerm={searchTerm}
+          onSearchTermChange={setSearchTerm}
+        />
+        <Card className="shadow-md border-border/10 bg-card flex-grow rbc-calendar-container">
+          <CardContent className="p-1 sm:p-2 md:p-3 h-full">
+            <DnDCalendar
+              localizer={localizer}
+              events={filteredEvents}
+              startAccessor="start"
+              endAccessor="end"
+              style={{ height: '100%' }}
+              selectable
+              resizable
+              onSelectEvent={handleSelectEvent}
+              onEventDrop={onEventDrop}
+              onEventResize={onEventDrop}
+              defaultView={Views.MONTH}
+              views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
+              view={currentView}
+              date={currentDate}
+              onNavigate={handleNavigate}
+              onView={handleViewChange}
+              messages={calendarMessages}
+              formats={calendarFormats}
+              components={{
+                event: CustomEvent,
+                toolbar: (toolbarProps) => (
+                  <CalendarToolbar
+                    {...toolbarProps}
+                    currentView={currentView}
+                    onViewChange={handleViewChange}
+                  />
+                ),
+              }}
+              eventPropGetter={eventPropGetter}
+              className="h-full"
+            />
+          </CardContent>
+        </Card>
+      </motion.div>
 
-    const CalendarPage = () => {
-      const [events, setEvents] = useState(initialEvents);
-      const [selectedEvent, setSelectedEvent] = useState(null);
-      const [isModalOpen, setIsModalOpen] = useState(false);
-      const [platformFilter, setPlatformFilter] = useState('all');
-      const navigate = useNavigate();
+      <motion.div
+        className="lg:w-80 xl:w-96 flex-shrink-0 space-y-4 md:space-y-6 lg:order-2 w-full lg:max-w-xs xl:max-w-sm"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <UpcomingPostsSidebar
+          posts={filteredEvents}
+          selectedDate={currentDate}
+          onSelectEvent={handleSelectEvent}
+        />
+        <StatusSummarySidebar events={events} />
+      </motion.div>
 
-       const handleSelectEvent = useCallback((event) => {
-         setSelectedEvent(event);
-         setIsModalOpen(true);
-       }, []);
+      <EventDetailsModal
+        isOpen={isModalOpen}
+        onOpenChange={(open) => {
+          setIsModalOpen(open);
+          if (!open) setSelectedEvent(null);
+        }}
+        event={selectedEvent}
+        onEdit={(event) => { navigate('/schedule', { state: { postToEdit: event } }); setIsModalOpen(false); }}
+        onDelete={handleDeleteEvent}
+        onViewAnalytics={() => toast({ title: "Analytics coming soon!" })}
+      />
 
-       const closeModal = () => {
-         setIsModalOpen(false);
-         setSelectedEvent(null);
-       };
+      <ConfirmDeleteDialog
+        isOpen={isConfirmDeleteOpen}
+        onOpenChange={setIsConfirmDeleteOpen}
+        eventToDelete={eventToDelete}
+        onConfirmDelete={confirmDelete}
+      />
 
-        const handleDeleteEvent = () => {
-            if (!selectedEvent) return;
-            setEvents(prev => prev.filter(ev => ev.id !== selectedEvent.id));
-            closeModal();
-            // Add toast notification
-        };
+      <Dialog open={isDragConfirmOpen} onOpenChange={setIsDragConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Reschedule</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to move "{draggedEventInfo?.event?.title}" to the new date/time?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setIsDragConfirmOpen(false); setDraggedEventInfo(null); }}>Cancel</Button>
+            <Button onClick={confirmEventDrop}>Confirm</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
 
-        const handleEditEvent = () => {
-             if (!selectedEvent) return;
-             navigate('/scheduler'); // Navigate to scheduler, potentially passing event ID
-             closeModal();
-        };
-
-        const handleViewAnalytics = () => {
-            if (!selectedEvent) return;
-            navigate('/analytics'); // Navigate to analytics, potentially passing filters
-            closeModal();
-        };
-
-       const filteredEvents = events.filter(event =>
-          platformFilter === 'all' || event.platform === platformFilter
-        );
-
-       const eventStyleGetter = useCallback((event) => {
-           const platformInfo = platformConfig[event.platform] || {};
-           const className = `${platformInfo.colorClass || ''}`;
-           return {
-             className: className,
-             // style: { backgroundColor: platformInfo.color }, // Inline styles also possible
-           };
-         }, []);
-
-
-      return (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="space-y-6 h-[calc(100vh-120px)] flex flex-col" // Adjust height based on layout
-        >
-          {/* Header */}
-          <div className="flex flex-wrap justify-between items-center gap-4">
-            <h1 className="text-3xl font-bold tracking-tight flex items-center">
-                <CalendarDays className="mr-2 h-7 w-7" /> Calendar View
-            </h1>
-             <div className="flex items-center gap-2">
-                {/* Placeholder for View Toggle (Month/Week/Day) - handled by calendar toolbar */}
-                <Select value={platformFilter} onValueChange={setPlatformFilter}>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Filter by Platform" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Platforms</SelectItem>
-                        <SelectItem value="facebook">Facebook</SelectItem>
-                        <SelectItem value="instagram">Instagram</SelectItem>
-                        <SelectItem value="twitter">Twitter</SelectItem>
-                        <SelectItem value="linkedin">LinkedIn</SelectItem>
-                    </SelectContent>
-                </Select>
-                <Button onClick={() => navigate('/scheduler')}>
-                    <PlusCircle className="mr-2 h-4 w-4" /> New Post
-                </Button>
-             </div>
-          </div>
-
-          {/* Calendar */}
-          <div className="flex-grow">
-             <Calendar
-               localizer={localizer}
-               events={filteredEvents}
-               startAccessor="start"
-               endAccessor="end"
-               style={{ height: '100%' }} // Make calendar fill container
-               onSelectEvent={handleSelectEvent}
-               eventPropGetter={eventStyleGetter}
-               components={{
-                 event: EventComponent, // Use custom event component
-                 // toolbar: CustomToolbar, // Use custom toolbar if created
-               }}
-               views={['month', 'week', 'day']} // Enable different views
-               step={30} // Time slot interval
-               showMultiDayTimes // Show times for multi-day events in week/day view
-             />
-          </div>
-
-          {/* Event Detail Modal */}
-           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-             <DialogContent className="sm:max-w-[425px]">
-               {selectedEvent && (
-                 <>
-                   <DialogHeader>
-                     <DialogTitle className="flex items-center">
-                         {platformConfig[selectedEvent.platform]?.icon && React.createElement(platformConfig[selectedEvent.platform].icon, { className: `mr-2 h-5 w-5 ${platformConfig[selectedEvent.platform]?.colorClass?.replace('platform-', 'text-') || ''}` })}
-                         Post Details
-                     </DialogTitle>
-                     <DialogDescription>
-                       {format(selectedEvent.start, 'PPPp')}
-                     </DialogDescription>
-                   </DialogHeader>
-                   <div className="py-4 space-y-4">
-                      {/* Media Preview Placeholder */}
-                     {selectedEvent.hasMedia && (
-                        <div className="h-32 bg-secondary rounded flex items-center justify-center text-muted-foreground italic">
-                            Media Preview Placeholder
-                        </div>
-                      )}
-                     <p className="text-sm whitespace-pre-wrap">{selectedEvent.title}</p>
-                     <div className="flex items-center space-x-2">
-                         <span className="text-sm font-medium">Status:</span>
-                         <Badge variant={selectedEvent.status === 'Published' ? 'secondary' : 'outline'} className={`border-0 ${selectedEvent.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
-                             {selectedEvent.status === 'Published' ? <CheckCircle className="h-3 w-3 mr-1" /> : <Clock className="h-3 w-3 mr-1" />}
-                             {selectedEvent.status}
-                         </Badge>
-                     </div>
-                   </div>
-                   <DialogFooter className="flex flex-col sm:flex-row sm:justify-between sm:space-x-2 gap-2">
-                     <Button variant="destructive" onClick={handleDeleteEvent} size="sm">
-                         <Trash2 className="mr-1 h-4 w-4"/> Delete
-                     </Button>
-                      <div className="flex gap-2">
-                         <Button variant="outline" onClick={handleEditEvent} size="sm">
-                             <Edit className="mr-1 h-4 w-4"/> Edit
-                         </Button>
-                         <Button variant="outline" onClick={handleViewAnalytics} size="sm">
-                              <BarChart2 className="mr-1 h-4 w-4"/> Analytics
-                         </Button>
-                     </div>
-                   </DialogFooter>
-                 </>
-               )}
-             </DialogContent>
-           </Dialog>
-        </motion.div>
-      );
-    };
-
-    export default CalendarPage;
-  
+export default CalendarPage;

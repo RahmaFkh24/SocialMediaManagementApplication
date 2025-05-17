@@ -180,7 +180,11 @@ export default defineConfig({
 		headers: {
 			'Cross-Origin-Embedder-Policy': 'credentialless',
 		},
-		allowedHosts: true,
+
+		allowedHosts: true, fs: {
+			allow: ['.'],
+		},
+		historyApiFallback: true, // <-- This line enables fallback routing
 	},
 	resolve: {
 		extensions: ['.jsx', '.js', '.tsx', '.ts', '.json',],

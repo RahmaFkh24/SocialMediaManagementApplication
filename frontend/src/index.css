@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'tailwindcss-animate';
+
 /* Import react-big-calendar styles */
 @import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -38,6 +40,7 @@
         /* Match primary */
 
         --radius: 0.5rem;
+
     }
 
     .dark {
@@ -90,70 +93,6 @@ body {
     min-height: 100vh;
 }
 
-/* Customizations for react-big-calendar */
-.rbc-calendar {
-    @apply border-border rounded-lg shadow-sm bg-card text-card-foreground p-4;
-}
-
-.rbc-toolbar {
-    @apply mb-4 flex flex-wrap items-center justify-between gap-2;
-}
-
-.rbc-toolbar button {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3;
-}
-
-.rbc-toolbar button.rbc-active {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90;
-}
-
-.rbc-toolbar .rbc-toolbar-label {
-    @apply text-lg font-semibold text-foreground flex-grow text-center;
-}
-
-.rbc-btn-group {
-    @apply flex gap-1;
-}
-
-.rbc-btn-group button:first-child {
-    @apply rounded-l-md;
-}
-
-.rbc-btn-group button:last-child {
-    @apply rounded-r-md;
-}
-
-.rbc-header {
-    @apply text-sm font-medium text-muted-foreground text-center py-2 border-b border-border;
-}
-
-.rbc-day-bg {
-    @apply border-l border-border;
-}
-
-.rbc-day-bg:first-child {
-    @apply border-l-0;
-}
-
-.rbc-month-view,
-.rbc-time-view {
-    @apply border border-border rounded-b-md;
-}
-
-.rbc-month-row {
-    @apply min-h-[120px] border-b border-border;
-    /* Ensure rows have height */
-}
-
-.rbc-row-content {
-    @apply flex;
-}
-
-.rbc-event {
-    @apply rounded-md p-1 text-xs shadow-sm border border-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1;
-    /* Default event color - customize further */
-    @apply bg-secondary text-secondary-foreground;
-}
 
 /* Example Platform Colors */
 .rbc-event.platform-facebook {

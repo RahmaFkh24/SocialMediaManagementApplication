@@ -9,6 +9,7 @@ export { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastVi
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
 export { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from './dropdown-menu';
 export { Label } from './label';
+export { ScrollArea } from './scroll-area';
 
 export { Progress } from './progress';
 export { Avatar, AvatarFallback, AvatarImage } from './avatar';

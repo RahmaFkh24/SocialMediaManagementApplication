@@ -6,6 +6,7 @@ import LandingPage from '@/pages/LandingPage';
 import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
 import OnboardingPage from '@/pages/OnboardingPage';
+import InboxPage from './pages/InboxPage';
 import DashboardPage from '@/pages/DashboardPage';
 import CalendarPage from '@/pages/CalendarPage';
 import SchedulerPage from '@/pages/SchedulerPage';
@@ -77,6 +78,7 @@ function AppContent() {
             <Route path="analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
             <Route path="accounts" element={<ProtectedRoute><AccountsPage /></ProtectedRoute>} />
             <Route path="settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+            <Route path="inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
           </Route>
 
           {/* Fallback */}
