@@ -42,11 +42,11 @@ export const initialEvents = [
     media: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGltZSUyMG1hbmFnZW1lbnR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60',
     notes: 'Engage with replies.',
   },
-   {
+  {
     id: 5,
     title: 'FB Live Q&A: Ask Me Anything about our services! 🎙️ #FacebookLive #AMA',
-    start: new Date(2025, 4, 20, 18,0,0),
-    end: new Date(2025, 4, 20, 19,0,0),
+    start: new Date(2025, 4, 20, 18, 0, 0),
+    end: new Date(2025, 4, 20, 19, 0, 0),
     platform: 'Facebook',
     status: 'Scheduled',
     media: 'https://images.unsplash.com/photo-1554200876-56c2f25224fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGl2ZSUyMHQlMjZhfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
@@ -55,8 +55,8 @@ export const initialEvents = [
   {
     id: 6,
     title: 'Instagram Reel: Behind the scenes of our new campaign shoot! 🎬 #BTS #CampaignLaunch',
-    start: new Date(2025, 4, 22, 15,30,0),
-    end: new Date(2025, 4, 22, 15,35,0),
+    start: new Date(2025, 4, 22, 15, 30, 0),
+    end: new Date(2025, 4, 22, 15, 35, 0),
     platform: 'Instagram',
     status: 'Published',
     media: 'https://images.unsplash.com/photo-1516788879873-4ebb0658c637?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YmVoaW5kJTIwdGhlJTIwc2NlbmVzfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',

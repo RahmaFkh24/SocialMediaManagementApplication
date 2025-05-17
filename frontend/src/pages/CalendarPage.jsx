@@ -76,7 +76,7 @@ const CalendarPage = () => {
       setEvents(updatedEvents);
       toast({
         title: 'Post Deleted',
-        description: "${eventToDelete.title}",
+        description: `${eventToDelete.title}`,
         variant: 'destructive',
       });
       setSelectedEvent(null);
@@ -112,7 +112,7 @@ const CalendarPage = () => {
       setEvents(updatedEvents);
       toast({
         title: 'Post Rescheduled',
-        description: "${event.title}",
+        description: `${event.title}`,
       });
     }
     setIsDragConfirmOpen(false);
@@ -135,6 +135,15 @@ const CalendarPage = () => {
     []
   );
 
+  // Calculate dynamic height based on view to make agenda view bigger
+  const calendarHeight = React.useMemo(() => {
+    if (currentView === Views.AGENDA) {
+      // Bigger height for agenda view (you can adjust the number)
+      return '700px';
+    }
+    return '500px'; // default height for other views
+  }, [currentView]);
+
   return (
     <div className="flex flex-col lg:flex-row gap-4 md:gap-6 h-full p-3 sm:p-4 md:p-3 bg-background">
       <motion.div
@@ -151,7 +160,7 @@ const CalendarPage = () => {
           onSearchTermChange={setSearchTerm}
         />
         <Card className="shadow-md border-border/10 bg-card flex-grow rbc-calendar-container">
-          <CardContent className="p-1 sm:p-2 md:p-3 h-full">
+          <CardContent className="p-1 sm:p-2 md:p-3" style={{ height: calendarHeight }}>
             <DnDCalendar
               localizer={localizer}
               events={filteredEvents}

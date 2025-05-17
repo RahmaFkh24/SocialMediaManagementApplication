@@ -175,7 +175,7 @@ export default defineConfig({
 	server: {
 		cors: true,
 		proxy: {
-			'/api': 'http://localhost:5000', // 👈 proxy added here
+			'/api': 'http://localhost:5000',
 		},
 		headers: {
 			'Cross-Origin-Embedder-Policy': 'credentialless',

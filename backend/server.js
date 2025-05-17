@@ -451,7 +451,34 @@ app.get('/api/messages', async (req, res, next) => {
         });
     }
 });
+// Facebook Posts Endpoint
+app.get('/api/posts', async (req, res) => {
+    try {
+        const response = await facebookClient.get(`${process.env.PAGE_ID}/posts`, {
+            fields: 'id,created_time,message,attachments{media},status_type,permalink_url'
+        });
 
+        const posts = response.data.data.map(post => ({
+            id: post.id,
+            content: post.message,
+            date: post.created_time,
+            media: post.attachments?.data[0]?.media?.image?.src || null,
+            status: post.status_type === 'scheduled_post' ? 'Scheduled' : 'Published',
+            url: post.permalink_url
+        }));
+
+        res.json({ success: true, data: posts });
+    } catch (error) {
+        console.error('Facebook API Error:', error);
+        res.status(500).json({
+            success: false,
+            error: {
+                message: error.message,
+                facebookError: error.response?.data?.error
+            }
+        });
+    }
+});
 // Comments Endpoint
 app.get('/api/comments', async (req, res, next) => {
     try {

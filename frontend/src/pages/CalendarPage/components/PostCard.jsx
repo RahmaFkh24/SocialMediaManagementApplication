@@ -28,7 +28,7 @@ const PostCard = ({ event, onEdit, onDelete, onViewAnalytics, onSelectEvent }) =
       <div className="flex justify-between items-start">
         <div className="flex-1 overflow-hidden pr-2">
           <div className="flex items-center gap-1.5 md:gap-2 mb-1">
-            {platform && React.cloneElement(platform.icon, { className: `${platform.icon.props.className} h-3.5 w-3.5`})}
+            {platform && React.cloneElement(platform.icon, { className: `${platform.icon.props.className} h-3.5 w-3.5` })}
             <span className="text-xs text-muted-foreground">{platform?.name} - {format(event.start, "p")}</span>
           </div>
           <p className="font-medium text-sm text-card-foreground leading-snug truncate" title={event.title}>{event.title}</p>
@@ -42,15 +42,15 @@ const PostCard = ({ event, onEdit, onDelete, onViewAnalytics, onSelectEvent }) =
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-popover border-border/30">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-border/30"/>
-            <DropdownMenuCheckboxItem onClick={(e) => { e.stopPropagation(); onEdit(event);}} className="focus:bg-muted/50">
+            <DropdownMenuSeparator className="bg-border/30" />
+            <DropdownMenuCheckboxItem onClick={(e) => { e.stopPropagation(); onEdit(event); }} className="focus:bg-muted/50">
               <Edit className="mr-2 h-4 w-4" /> Edit
             </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem onClick={(e) => { e.stopPropagation(); onViewAnalytics(event);}} className="focus:bg-muted/50">
+            <DropdownMenuCheckboxItem onClick={(e) => { e.stopPropagation(); onViewAnalytics(event); }} className="focus:bg-muted/50">
               <BarChart2 className="mr-2 h-4 w-4" /> View Analytics
             </DropdownMenuCheckboxItem>
-            <DropdownMenuSeparator className="bg-border/30"/>
-            <DropdownMenuCheckboxItem onClick={(e) => { e.stopPropagation(); onDelete(event.id);}} className="text-red-500 focus:text-red-500 focus:bg-red-500/10">
+            <DropdownMenuSeparator className="bg-border/30" />
+            <DropdownMenuCheckboxItem onClick={(e) => { e.stopPropagation(); onDelete(event.id); }} className="text-red-500 focus:text-red-500 focus:bg-red-500/10">
               <Trash2 className="mr-2 h-4 w-4" /> Delete
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>

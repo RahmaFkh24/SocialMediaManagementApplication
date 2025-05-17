@@ -40,6 +40,7 @@
         --radius: 0.5rem;
     }
 
+
     .dark {
         --background: 222.2 84% 4.9%;
         --foreground: 210 40% 98%;
@@ -90,119 +91,59 @@ body {
     min-height: 100vh;
 }
 
-/* Customizations for react-big-calendar */
+/* Encore plus compact, avec jours (nombres) plus gros */
+
 .rbc-calendar {
-    @apply border-border rounded-lg shadow-sm bg-card text-card-foreground p-4;
+    font-size: 0.6rem;
+    /* text-[9.6px] */
 }
 
 .rbc-toolbar {
-    @apply mb-4 flex flex-wrap items-center justify-between gap-2;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.6rem;
 }
 
-.rbc-toolbar button {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3;
-}
-
-.rbc-toolbar button.rbc-active {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90;
-}
-
-.rbc-toolbar .rbc-toolbar-label {
-    @apply text-lg font-semibold text-foreground flex-grow text-center;
-}
-
-.rbc-btn-group {
-    @apply flex gap-1;
-}
-
-.rbc-btn-group button:first-child {
-    @apply rounded-l-md;
-}
-
-.rbc-btn-group button:last-child {
-    @apply rounded-r-md;
+.rbc-btn-group button {
+    padding: 0.1rem 0.3rem;
+    font-size: 0.55rem;
+    line-height: 1;
 }
 
 .rbc-header {
-    @apply text-sm font-medium text-muted-foreground text-center py-2 border-b border-border;
+    padding: 0.1rem 0.2rem;
+    font-size: 0.6rem;
 }
 
-.rbc-day-bg {
-    @apply border-l border-border;
+.rbc-date-cell {
+    padding: 0.1rem;
+    font-size: 1rem;
+    /* ✅ nombres des jours plus grands */
+    font-weight: 600;
 }
 
-.rbc-day-bg:first-child {
-    @apply border-l-0;
+.rbc-time-header-content,
+.rbc-timeslot-group {
+    min-height: 6px;
+    /* encore plus réduit */
 }
 
-.rbc-month-view,
-.rbc-time-view {
-    @apply border border-border rounded-b-md;
-}
-
-.rbc-month-row {
-    @apply min-h-[120px] border-b border-border;
-    /* Ensure rows have height */
-}
-
-.rbc-row-content {
-    @apply flex;
-}
-
-.rbc-event {
-    @apply rounded-md p-1 text-xs shadow-sm border border-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1;
-    /* Default event color - customize further */
-    @apply bg-secondary text-secondary-foreground;
-}
-
-/* Example Platform Colors */
-.rbc-event.platform-facebook {
-    @apply bg-blue-100 border-blue-200 text-blue-800;
-}
-
-.rbc-event.platform-instagram {
-    @apply bg-pink-100 border-pink-200 text-pink-800;
-}
-
-.rbc-event.platform-twitter {
-    @apply bg-sky-100 border-sky-200 text-sky-800;
-}
-
-.rbc-event.platform-linkedin {
-    @apply bg-indigo-100 border-indigo-200 text-indigo-800;
-}
-
-
-.rbc-event-label {
-    @apply font-medium truncate block;
-}
-
-.rbc-event-content {
-    @apply text-xs;
-}
-
-.rbc-time-header,
 .rbc-time-content {
-    @apply border-t border-border;
+    min-height: 150px;
+    /* réduire davantage la hauteur générale */
 }
 
 .rbc-time-slot {
-    @apply border-t border-border;
+    padding: 0;
+    height: 6px;
 }
 
-.rbc-timeslot-group {
-    @apply min-h-[40px];
-    /* Adjust height for time slots */
+.rbc-event {
+    padding: 1px 2px;
+    font-size: 0.5rem;
+    line-height: 1;
+    white-space: nowrap;
 }
 
-.rbc-current-time-indicator {
-    @apply bg-primary h-0.5;
-}
-
-.rbc-off-range-bg {
-    @apply bg-muted/30;
-}
-
-.rbc-today {
-    @apply bg-accent/50;
+.rbc-day-slot .rbc-event-content {
+    padding: 0 1px;
 }

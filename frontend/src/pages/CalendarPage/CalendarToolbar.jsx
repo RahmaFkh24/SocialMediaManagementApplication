@@ -1,10 +1,21 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, CalendarPlus as CalendarToday, View as ViewDay, View as ViewWeek, View as ViewModule } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  ChevronLeft,
+  ChevronRight,
+  CalendarPlus as CalendarToday,
+  View as ViewModule,
+} from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const CalendarToolbar = (props) => {
-  const { label, onNavigate, onView, view, views } = props;
+  const { label, onNavigate, onView, view } = props;
 
   const navigate = (action) => {
     onNavigate(action);
@@ -12,50 +23,74 @@ const CalendarToolbar = (props) => {
 
   const viewNamesGroup = [
     { view: 'month', label: 'Month', Icon: ViewModule },
-    { view: 'week', label: 'Week', Icon: ViewWeek },
-    { view: 'day', label: 'Day', Icon: ViewDay },
     { view: 'agenda', label: 'Agenda', Icon: CalendarToday },
   ];
 
   return (
-    <div className="rbc-toolbar">
-      <div className="rbc-btn-group">
-        <Button variant="outline" size="sm" onClick={() => navigate('PREV')} aria-label="Previous Period">
-          <ChevronLeft className="h-4 w-4" />
+    <div className="rbc-toolbar flex flex-wrap justify-between items-center gap-2">
+      {/* Navigation buttons (bigger size) */}
+      <div className="rbc-btn-group flex gap-2">
+        <Button
+          variant="outline"
+          size="default"
+          className="px-4 py-2 text-base"
+          onClick={() => navigate('PREV')}
+          aria-label="Previous Period"
+        >
+          <ChevronLeft className="h-5 w-5" />
         </Button>
-        <Button variant="outline" size="sm" onClick={() => navigate('TODAY')} aria-label="Today">
-          <CalendarToday className="h-4 w-4 mr-1 sm:mr-2" />
-          <span className="hidden sm:inline">Today</span>
+
+        <Button
+          variant="outline"
+          size="default"
+          className="px-4 py-2 text-base flex items-center"
+          onClick={() => navigate('TODAY')}
+          aria-label="Today"
+        >
+          <CalendarToday className="h-5 w-5 mr-2" />
+          <span>Today</span>
         </Button>
-        <Button variant="outline" size="sm" onClick={() => navigate('NEXT')} aria-label="Next Period">
-          <ChevronRight className="h-4 w-4" />
+
+        <Button
+          variant="outline"
+          size="default"
+          className="px-4 py-2 text-base"
+          onClick={() => navigate('NEXT')}
+          aria-label="Next Period"
+        >
+          <ChevronRight className="h-5 w-5" />
         </Button>
       </div>
 
-      <span className="rbc-toolbar-label">{label}</span>
+      {/* Label */}
+      <span className="rbc-toolbar-label font-semibold text-lg">{label}</span>
 
-      <div className="rbc-btn-group hidden sm:flex">
-        {viewNamesGroup.map(item => (
+      {/* View buttons */}
+      <div className="rbc-btn-group hidden sm:flex gap-2">
+        {viewNamesGroup.map((item) => (
           <Button
             key={item.view}
             variant={view === item.view ? 'default' : 'outline'}
             size="sm"
             onClick={() => onView(item.view)}
             aria-label={`View ${item.label}`}
-            className={view === item.view ? 'bg-primary text-primary-foreground' : ''}
+            className={`flex items-center ${view === item.view ? 'bg-primary text-primary-foreground' : ''
+              }`}
           >
-            <item.Icon className="h-4 w-4 mr-0 sm:mr-2" />
+            <item.Icon className="h-4 w-4 mr-2" />
             <span className="hidden sm:inline">{item.label}</span>
           </Button>
         ))}
       </div>
+
+      {/* Mobile dropdown */}
       <div className="sm:hidden">
         <Select value={view} onValueChange={(newView) => onView(newView)}>
-          <SelectTrigger className="w-[120px] h-9" aria-label="Select View">
+          <SelectTrigger className="w-[140px] h-10 text-sm" aria-label="Select View">
             <SelectValue placeholder="Select view" />
           </SelectTrigger>
           <SelectContent>
-            {viewNamesGroup.map(item => (
+            {viewNamesGroup.map((item) => (
               <SelectItem key={item.view} value={item.view}>
                 <div className="flex items-center">
                   <item.Icon className="h-4 w-4 mr-2" />
