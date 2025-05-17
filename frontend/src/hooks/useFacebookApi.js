@@ -1,4 +1,4 @@
-// hooks/useFacebookApi.js
+
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -10,7 +10,7 @@ const useFacebookApi = (endpoint) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`/api/facebook/${endpoint}`, {
+                const response = await axios.get(`/api/analytics/${endpoint}`, {
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',

@@ -1,45 +1,20 @@
-
 import React, { useState, useEffect } from 'react';
 import MetricCard from '@/components/MetricCard';
 import AnimatedCounter from '@/components/AnimatedCounter';
-import { Users, FileText, CalendarClock, TrendingUp, PlusCircle, Link as LinkIcon, Facebook, Twitter, CheckCircle, Clock, Lightbulb, Award, Send, BarChart3, CheckSquare, Globe } from 'lucide-react';
+import { Users, FileText, CalendarClock, TrendingUp, PlusCircle, Link as LinkIcon, Facebook, CheckCircle, Clock, Lightbulb, Send, BarChart3, CheckSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card'; // Added CardFooter import
+import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from "@/components/ui/progress";
+import { Progress } from '@/components/ui/progress';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useAuth } from '@/contexts/AuthContext';
-
+import useFacebookApi from '@/hooks/useFacebookApi';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const dashboardMetrics = [
-  { title: "Total Posts (Week)", value: 45, icon: FileText, change: "+10" },
-  { title: "Connected Accounts", value: 2, icon: LinkIcon, change: "+0" },
-  { title: "Scheduled Today", value: 8, icon: CalendarClock, change: "+3" },
-  { title: "Engagement Peak", value: "14.2%", icon: TrendingUp, change: "+1.1%" },
-];
-
-const bestTimes = [
-  { time: "9:00 AM", day: "Weekday", reason: "Morning check-ins", icon: Clock },
-  { time: "1:00 PM", day: "Weekday", reason: "Lunch break scroll", icon: Clock },
-  { time: "7:00 PM", day: "Weekday", reason: "Evening relaxation", icon: Clock },
-];
-
-const platformMap = { facebook: Facebook, instagram: LinkIcon };
-const platformColors = { facebook: 'text-blue-600', instagram: 'text-pink-500' };
-
-const engagementChartData = [
-  { name: 'Jan', Facebook: 400, Instagram: 240, LinkedIn: 140 },
-  { name: 'Feb', Facebook: 300, Instagram: 139, LinkedIn: 100 },
-  { name: 'Mar', Facebook: 200, Instagram: 980, LinkedIn: 300 },
-  { name: 'Apr', Facebook: 278, Instagram: 390, LinkedIn: 250 },
-  { name: 'May', Facebook: 189, Instagram: 480, LinkedIn: 210 },
-  { name: 'Jun', Facebook: 239, Instagram: 380, LinkedIn: 350 },
-  { name: 'Jul', Facebook: 349, Instagram: 430, LinkedIn: 310 },
-];
-
+const platformMap = { facebook: Facebook };
+const platformColors = { facebook: 'text-blue-600' };
 
 const containerVariants = {
   hidden: { opacity: 1 },
@@ -51,7 +26,7 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } },
+  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
 };
 
 const bestTimeItemVariants = {
@@ -60,12 +35,16 @@ const bestTimeItemVariants = {
   hover: { scale: 1.05, backgroundColor: 'hsl(var(--primary)/0.1)', transition: { duration: 0.2 } }
 };
 
+const bestTimes = [
+  { time: '9:00 AM', day: 'Weekday', reason: 'Morning check-ins', icon: Clock },
+  { time: '1:00 PM', day: 'Weekday', reason: 'Lunch break scroll', icon: Clock },
+  { time: '7:00 PM', day: 'Weekday', reason: 'Evening relaxation', icon: Clock }
+];
+
 const DashboardPage = () => {
   const { isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <div>Redirecting to login...</div>;
-  }
+  const { data: dashboardData, loading: dashboardLoading, error: dashboardError } = useFacebookApi('dashboard');
+  const { data: audienceData, loading: audienceLoading, error: audienceError } = useFacebookApi('audience');
   const [upcomingPosts, setUpcomingPosts] = useState([]);
 
   useEffect(() => {
@@ -78,6 +57,57 @@ const DashboardPage = () => {
     setUpcomingPosts(futurePosts);
   }, []);
 
+  if (!isAuthenticated) {
+    return <div>Redirecting to login...</div>;
+  }
+
+  if (dashboardLoading || audienceLoading) {
+    return <div className="flex justify-center p-8 text-muted-foreground">Loading dashboard data...</div>;
+  }
+
+  if (dashboardError || audienceError) {
+    return <div className="flex justify-center p-8 text-destructive">Error: {dashboardError || audienceError}</div>;
+  }
+
+  // Extract dashboard data
+  const {
+    totalPosts = { value: 0, change: 0, trend: 'up' },
+    scheduledToday = { value: 0, change: 0, trend: 'up' },
+    engagementPeak = { value: 0, change: 0, trend: 'up' },
+    engagementChartData = []
+  } = dashboardData?.data || {};
+
+  // Extract audience data
+  const { totalFans = 0 } = audienceData?.data || {};
+
+  // Define metrics
+  const dashboardMetrics = [
+    {
+      title: 'Total Posts (Week)',
+      value: totalPosts.value,
+      icon: FileText,
+      change: `${totalPosts.change >= 0 ? '+' : ''}${totalPosts.change}%`,
+      trend: totalPosts.trend
+    },
+    {
+      title: 'Connected Accounts',
+      value: 1, // Only Facebook based on logs
+      icon: LinkIcon,
+      change: '+0%'
+    },
+    {
+      title: 'Scheduled Today',
+      value: scheduledToday.value,
+      icon: CalendarClock,
+      change: `${scheduledToday.change >= 0 ? '+' : ''}${scheduledToday.change}%`
+    },
+    {
+      title: 'Engagement Peak',
+      value: `${engagementPeak.value}%`,
+      icon: TrendingUp,
+      change: `${engagementPeak.change >= 0 ? '+' : ''}${engagementPeak.change}%`
+    }
+  ];
 
   return (
     <motion.div
@@ -97,11 +127,12 @@ const DashboardPage = () => {
             title={metric.title}
             icon={metric.icon}
             change={metric.change}
+            trend={metric.trend}
             delay={index}
             value={
-              typeof metric.value === 'number' || (typeof metric.value === 'string' && metric.value.includes('%'))
-                ? <AnimatedCounter to={typeof metric.value === 'string' ? parseFloat(metric.value) : metric.value} className="text-3xl font-bold group-hover:text-primary transition-colors" duration={1} />
-                : <span className="text-3xl font-bold group-hover:text-primary transition-colors">{metric.value}</span>
+              typeof metric.value === 'string' && metric.value.includes('%') ?
+                <span className="text-3xl font-bold group-hover:text-primary transition-colors">{metric.value}</span> :
+                <AnimatedCounter to={metric.value} className="text-3xl font-bold group-hover:text-primary transition-colors" duration={1} />
             }
           />
         ))}
@@ -114,39 +145,47 @@ const DashboardPage = () => {
             <Card className="shadow-md rounded-2xl overflow-hidden">
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="flex items-center"><BarChart3 className="mr-2 h-5 w-5 text-primary" /> Engagement Over Time</CardTitle>
-                <CardDescription>Total engagement across all connected platforms (Jan - Jul)</CardDescription>
+                <CardDescription>Facebook engagement for the last 7 days</CardDescription>
               </CardHeader>
               <CardContent className="p-0 sm:p-2">
-                <div style={{ width: '100%', height: 300 }}>
-                  <ResponsiveContainer>
-                    <AreaChart
-                      data={engagementChartData}
-                      margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
-                    >
-                      <defs>
-                        <linearGradient id="colorFb" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-                        </linearGradient>
-                        <linearGradient id="colorIg" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-                        </linearGradient>
-                        <linearGradient id="colorLi" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#ffc658" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#ffc658" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.3} />
-                      <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis fontSize={12} tickLine={false} axisLine={false} />
-                      <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem' }} />
-                      <Area type="monotone" dataKey="Facebook" stackId="1" stroke="#8884d8" fillOpacity={1} fill="url(#colorFb)" />
-                      <Area type="monotone" dataKey="Instagram" stackId="1" stroke="#82ca9d" fillOpacity={1} fill="url(#colorIg)" />
-                      <Area type="monotone" dataKey="LinkedIn" stackId="1" stroke="#ffc658" fillOpacity={1} fill="url(#colorLi)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+                {engagementChartData.length === 0 || engagementChartData.every(d => d.Facebook === 0) ? (
+                  <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                    No engagement data available
+                  </div>
+                ) : (
+                  <div style={{ width: '100%', height: 300 }}>
+                    <ResponsiveContainer>
+                      <AreaChart
+                        data={engagementChartData}
+                        margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient id="colorFb" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                            <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.3} />
+                        <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                        <YAxis fontSize={12} tickLine={false} axisLine={false} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: 'hsl(var(--background))',
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '0.5rem'
+                          }}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="Facebook"
+                          stroke="#8884d8"
+                          fillOpacity={1}
+                          fill="url(#colorFb)"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -158,38 +197,23 @@ const DashboardPage = () => {
                 <CardTitle className="flex items-center"><LinkIcon className="mr-2 h-5 w-5 text-primary" /> Connected Accounts</CardTitle>
                 <CardDescription>Manage your social media accounts</CardDescription>
               </CardHeader>
-              <CardContent className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Facebook Account */}
+              <CardContent className="p-4 sm:p-6 grid grid-cols-1 gap-4">
                 <Card className="p-4 space-y-2 border-l-4 border-blue-600">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-2">
                       <Facebook className="h-6 w-6 text-blue-600" />
-                      <h4 className="font-semibold">Social Pulse</h4>
+                      <h4 className="font-semibold">Fitness Sportweare</h4>
                     </div>
-                    <Badge className="bg-green-100 text-green-700 border-green-200"><CheckSquare className="h-3 w-3 mr-1" />Connected</Badge>
+                    <Badge className="bg-green-100 text-green-700 border-green-200">
+                      <CheckSquare className="h-3 w-3 mr-1" />Connected
+                    </Badge>
                   </div>
                   <div className="text-sm text-muted-foreground space-y-1">
-                    <p>Followers: <span className="font-medium text-foreground">12,580</span></p>
-                    <p>Posts: <span className="font-medium text-foreground">124</span></p>
-                    <p>Engagement: <span className="font-medium text-foreground">7.2%</span></p>
+                    <p>Followers: <span className="font-medium text-foreground">{totalFans}</span></p>
+                    <p>Posts: <span className="font-medium text-foreground">{totalPosts.value}</span></p>
+                    <p>Engagement: <span className="font-medium text-foreground">{engagementPeak.value}%</span></p>
                   </div>
-                  <Progress value={72} className="h-1.5" indicatorClassName="bg-purple-500" />
-                </Card>
-                {/* Instagram Account */}
-                <Card className="p-4 space-y-2 border-l-4 border-pink-500">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                      <LinkIcon className="h-6 w-6 text-pink-500" /> {/* Placeholder Icon */}
-                      <h4 className="font-semibold">Social Pulse Design</h4>
-                    </div>
-                    <Badge className="bg-green-100 text-green-700 border-green-200"><CheckSquare className="h-3 w-3 mr-1" />Connected</Badge>
-                  </div>
-                  <div className="text-sm text-muted-foreground space-y-1">
-                    <p>Followers: <span className="font-medium text-foreground">8,740</span></p>
-                    <p>Posts: <span className="font-medium text-foreground">342</span></p>
-                    <p>Engagement: <span className="font-medium text-foreground">5.8%</span></p>
-                  </div>
-                  <Progress value={58} className="h-1.5" indicatorClassName="bg-purple-500" />
+                  <Progress value={engagementPeak.value * 10} className="h-1.5" indicatorClassName="bg-purple-500" />
                 </Card>
               </CardContent>
               <CardFooter className="p-4 sm:p-6 border-t pt-4">
@@ -199,7 +223,6 @@ const DashboardPage = () => {
               </CardFooter>
             </Card>
           </motion.div>
-
 
           {/* Upcoming Posts Section */}
           <motion.div variants={itemVariants}>
@@ -247,8 +270,6 @@ const DashboardPage = () => {
               </CardFooter>
             </Card>
           </motion.div>
-
-
         </div>
 
         <motion.div
@@ -268,7 +289,6 @@ const DashboardPage = () => {
                 Based on your recent engagement data.
               </CardDescription>
             </CardHeader>
-
             <CardContent className="flex-grow px-4 pb-4 overflow-y-auto space-y-2">
               <motion.div
                 className="space-y-2"
@@ -287,8 +307,7 @@ const DashboardPage = () => {
                     <slot.icon className="h-5 w-5 text-primary flex-shrink-0" />
                     <div>
                       <p className="font-medium text-sm text-foreground">
-                        {slot.time}{" "}
-                        <span className="text-muted-foreground text-xs">({slot.day})</span>
+                        {slot.time} <span className="text-muted-foreground text-xs">({slot.day})</span>
                       </p>
                       <p className="text-xs text-muted-foreground">{slot.reason}</p>
                     </div>

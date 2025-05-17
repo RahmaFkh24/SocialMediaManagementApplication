@@ -21,6 +21,12 @@ const userSchema = mongoose.Schema(
             minlength: 6,
             select: false
         },
+        subscription: {
+            status: { type: String, enum: ['active', 'trialing', 'inactive'], default: 'inactive' },
+            stripeCustomerId: { type: String },
+            stripeSubscriptionId: { type: String },
+            trialEnd: { type: Date }
+        },
     },
     {
         timestamps: true,

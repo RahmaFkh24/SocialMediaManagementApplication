@@ -1,3 +1,5 @@
+//run this with "node facebookCheck.js"
+// This is a simple script to check if the Facebook connection is working properly or not.
 const axios = require('axios');
 
 const verifyFacebookConnection = async () => {
