@@ -1,0 +1,182 @@
+{
+  "layout": {
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "calendar": "Calendrier",
+      "schedulePost": "Planifier un post",
+      "mediaLibrary": "Médiathèque",
+      "settings": "Paramètres"
+    },
+    "sidebar": {
+      "collapse": "Réduire"
+    },
+    "pageTitles": {
+        "dashboard": "Tableau de bord",
+        "calendar": "Calendrier",
+        "schedulePost": "Planifier un post",
+        "mediaLibrary": "Médiathèque",
+        "settings": "Paramètres",
+        "page": "Page"
+    },
+    "languageSwitcher": {
+      "selectLanguage": "Choisir la langue",
+      "english": "Anglais",
+      "french": "Français",
+      "arabic": "Arabe"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "noNew": "Aucune nouvelle notification"
+    },
+    "userMenu": {
+      "myAccount": "Mon Compte",
+      "profile": "Profil",
+      "billing": "Facturation",
+      "settings": "Paramètres",
+      "logOut": "Déconnexion"
+    }
+  },
+  "settingsPage": {
+    "title": "Paramètres",
+    "description": "Gérez les paramètres de votre compte et de l'application.",
+    "languageSettings": {
+      "title": "Paramètres de langue",
+      "description": "Choisissez votre langue préférée pour l'application.",
+      "selectLabel": "Langue de l'application"
+    },
+    "themeSettings": {
+        "title": "Paramètres du thème",
+        "description": "Personnalisez l'apparence de l'application.",
+        "darkMode": "Mode Sombre",
+        "toggleTheme": "Changer de thème"
+    },
+    "notificationSettings": {
+        "title": "Préférences de notification",
+        "description": "Gérez la façon dont vous recevez les notifications.",
+        "emailNotifications": "Notifications par e-mail",
+        "pushNotifications": "Notifications Push",
+        "inAppNotifications": "Notifications dans l'application"
+    },
+    "accountSettings": {
+        "title": "Paramètres du compte",
+        "description": "Mettez à jour vos informations personnelles et votre mot de passe.",
+        "updateProfile": "Mettre à jour le profil",
+        "changePassword": "Changer le mot de passe"
+    },
+    "saveChanges": "Enregistrer les modifications"
+  },
+  "dashboardPage": {
+    "totalPosts": "Posts Totaux",
+    "acrossAllPlatforms": "Sur toutes les plateformes",
+    "scheduledPosts": "Posts Planifiés",
+    "readyToGoLive": "Prêts à être publiés",
+    "connectedAccounts": "Comptes Connectés",
+    "platforms": "FB, IG, LI, TW, TK",
+    "engagementRate": "Taux d'Engagement",
+    "averageAcrossPlatforms": "Moyenne toutes plateformes",
+    "bestTimesToPost": "Meilleurs Moments pour Poster",
+    "bestTimesDescription": "Top 3 des créneaux horaires recommandés basés sur l'analyse récente de l'engagement.",
+    "highEngagement": "Engagement Élevé",
+    "peak": "Pic",
+    "high": "Haut",
+    "good": "Bon",
+    "recentActivity": "Activité Récente",
+    "recentActivityDescription": "Dernières actions et mises à jour de votre compte.",
+    "viewAllActivity": "Voir Toute l'Activité",
+    "boostReach": "Augmentez Votre Portée !",
+    "boostReachDescription": "Explorez nos nouvelles suggestions de contenu alimentées par l'IA pour maximiser l'engagement.",
+    "discoverAISuggestions": "Découvrir les Suggestions IA",
+    "newPostScheduled": "Nouveau post planifié pour '{campaign}' sur {platform}.",
+    "connectionRefreshed": "Jeton de connexion {platform} actualisé avec succès.",
+    "reportGenerated": "Rapport de performance hebdomadaire généré.",
+    "newPostPublished": "Vous avez publié un nouveau post sur {platform}."
+  },
+  "calendarPage": {
+    "title": "Calendrier de Contenu",
+    "newPost": "Nouveau Post",
+    "filterPlatforms": "Plateformes",
+    "searchPlaceholder": "Rechercher...",
+    "confirmRescheduleTitle": "Confirmer la Replanification",
+    "confirmRescheduleDescription": "Êtes-vous sûr de vouloir déplacer \"{postTitle}\" vers la nouvelle date/heure ?",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "postDeletedToastTitle": "Post Supprimé",
+    "postDeletedToastDescription": "\"{postTitle}\" a été supprimé.",
+    "postRescheduledToastTitle": "Post Replanifié",
+    "postRescheduledToastDescription": "\"{postTitle}\" a été déplacé.",
+    "analyticsComingSoon": "Analyses bientôt disponibles !",
+    "view": {
+      "month": "Mois",
+      "week": "Semaine",
+      "day": "Jour",
+      "agenda": "Agenda"
+    },
+    "today": "Aujourd'hui",
+    "previousPeriod": "Période Précédente",
+    "nextPeriod": "Période Suivante"
+  },
+  "schedulePostPage": {
+    "titleNew": "Planifier un Nouveau Post",
+    "titleEdit": "Modifier le Post",
+    "description": "Rédigez votre message, sélectionnez les plateformes et définissez votre calendrier.",
+    "postContentLabel": "Contenu du Post",
+    "postContentPlaceholder": "Qu'avez-vous en tête ? Partagez une mise à jour, posez une question ou racontez une histoire...",
+    "selectPlatformsLabel": "Sélectionner les Plateformes",
+    "scheduleDateLabel": "Date de Planification",
+    "pickDate": "Choisir une date",
+    "scheduleTimeLabel": "Heure de Planification",
+    "attachMediaLabel": "Joindre un Média (Optionnel)",
+    "mediaSelectedDescription": "Image sélectionnée. Cliquez sur X pour la supprimer.",
+    "uploadMediaPrompt": "Cliquez pour téléverser",
+    "uploadMediaSubPrompt": "ou glissez-déposez",
+    "uploadMediaHint": "PNG, JPG, GIF jusqu'à 10Mo",
+    "internalNotesLabel": "Notes Internes (Optionnel)",
+    "internalNotesPlaceholder": "Ajoutez ici des notes internes, des rappels ou des détails de campagne. Non visible publiquement.",
+    "cancel": "Annuler",
+    "schedulePostButton": "Planifier le Post",
+    "updatePostButton": "Mettre à Jour le Post",
+    "editingPostToastTitle": "Modification du Post",
+    "editingPostToastDescription": "Vous modifiez \"{postTitle}\"...",
+    "errorToastTitle": "Erreur",
+    "errorEmptyContent": "Le contenu du post ne peut pas être vide.",
+    "errorNoPlatform": "Veuillez sélectionner au moins une plateforme.",
+    "mediaSelectedToastTitle": "Média Sélectionné",
+    "mediaSelectedToastDescription": "{fileName} est prêt pour le post.",
+    "mediaRemovedToastTitle": "Média Supprimé",
+    "postScheduledToastTitle": "Post Planifié !",
+    "postUpdatedToastTitle": "Post Mis à Jour !",
+    "postScheduledToastDescription": "Votre post \"{postTitle}\" a été planifié.",
+    "postUpdatedToastDescription": "Votre post \"{postTitle}\" a été mis à jour."
+  },
+  "mediaPage": {
+    "title": "Médiathèque",
+    "description": "Gérez toutes vos images, vidéos et autres ressources en un seul endroit.",
+    "uploadNewMedia": "Téléverser un Nouveau Média",
+    "searchPlaceholder": "Rechercher un média par nom ou tag...",
+    "viewLabel": "Vue :",
+    "noMediaFoundTitle": "Aucun Média Trouvé",
+    "noMediaFoundDescription": "Essayez d'ajuster votre recherche ou téléversez de nouveaux médias.",
+    "editDetailsTooltip": "Modifier les Détails",
+    "deleteMediaTooltip": "Supprimer le Média",
+    "modalTitle": "{mediaName}",
+    "modalDescription": "{mediaType} - {mediaSize} - Téléversé le {uploadDate}",
+    "dimensionsLabel": "Dimensions :",
+    "durationLabel": "Durée :",
+    "tagsLabel": "Tags :",
+    "notAvailable": "N/A",
+    "previewNotAvailable": "Aperçu non disponible pour ce type de fichier.",
+    "downloadButton": "Télécharger",
+    "editDetailsButton": "Modifier les Détails",
+    "uploadModalTitle": "Téléverser un Nouveau Média",
+    "uploadModalDescription": "Glissez-déposez des fichiers ici ou cliquez pour parcourir. Images et vidéos supportées.",
+    "uploadModalPrompt": "Cliquez pour téléverser",
+    "uploadModalSubPrompt": "ou glissez-déposez",
+    "uploadModalHint": "PNG, JPG, GIF, MP4, MOV jusqu'à 50Mo",
+    "cancelButton": "Annuler",
+    "deleteConfirmTitle": "Confirmer la Suppression",
+    "deleteConfirmDescription": "Êtes-vous sûr de vouloir supprimer \"{mediaName}\" ? Cette action est irréversible.",
+    "deleteMediaButton": "Supprimer le Média",
+    "uploadSuccessToast": "{count} fichier(s) ajouté(s) à la médiathèque.",
+    "mediaDeletedToast": "{mediaName} a été supprimé."
+  }
+}

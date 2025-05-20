@@ -1,0 +1,182 @@
+{
+  "layout": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "calendar": "Calendar",
+      "schedulePost": "Schedule Post",
+      "mediaLibrary": "Media Library",
+      "settings": "Settings"
+    },
+    "sidebar": {
+      "collapse": "Collapse"
+    },
+    "pageTitles": {
+        "dashboard": "Dashboard",
+        "calendar": "Calendar",
+        "schedulePost": "Schedule Post",
+        "mediaLibrary": "Media Library",
+        "settings": "Settings",
+        "page": "Page"
+    },
+    "languageSwitcher": {
+      "selectLanguage": "Select Language",
+      "english": "English",
+      "french": "French",
+      "arabic": "Arabic"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "noNew": "No new notifications"
+    },
+    "userMenu": {
+      "myAccount": "My Account",
+      "profile": "Profile",
+      "billing": "Billing",
+      "settings": "Settings",
+      "logOut": "Log out"
+    }
+  },
+  "settingsPage": {
+    "title": "Settings",
+    "description": "Manage your account and application settings.",
+    "languageSettings": {
+      "title": "Language Settings",
+      "description": "Choose your preferred language for the application.",
+      "selectLabel": "Application Language"
+    },
+    "themeSettings": {
+        "title": "Theme Settings",
+        "description": "Customize the look and feel of the application.",
+        "darkMode": "Dark Mode",
+        "toggleTheme": "Toggle Theme"
+    },
+    "notificationSettings": {
+        "title": "Notification Preferences",
+        "description": "Manage how you receive notifications.",
+        "emailNotifications": "Email Notifications",
+        "pushNotifications": "Push Notifications",
+        "inAppNotifications": "In-App Notifications"
+    },
+    "accountSettings": {
+        "title": "Account Settings",
+        "description": "Update your personal information and password.",
+        "updateProfile": "Update Profile",
+        "changePassword": "Change Password"
+    },
+    "saveChanges": "Save Changes"
+  },
+  "dashboardPage": {
+    "totalPosts": "Total Posts",
+    "acrossAllPlatforms": "Across all platforms",
+    "scheduledPosts": "Scheduled Posts",
+    "readyToGoLive": "Ready to go live",
+    "connectedAccounts": "Connected Accounts",
+    "platforms": "FB, IG, LI, TW, TK",
+    "engagementRate": "Engagement Rate",
+    "averageAcrossPlatforms": "Average across platforms",
+    "bestTimesToPost": "Best Times to Post",
+    "bestTimesDescription": "Top 3 recommended time slots based on recent engagement analysis.",
+    "highEngagement": "High Engagement",
+    "peak": "Peak",
+    "high": "High",
+    "good": "Good",
+    "recentActivity": "Recent Activity",
+    "recentActivityDescription": "Latest actions and updates in your account.",
+    "viewAllActivity": "View All Activity",
+    "boostReach": "Boost Your Reach!",
+    "boostReachDescription": "Explore our new AI-powered content suggestions to maximize engagement.",
+    "discoverAISuggestions": "Discover AI Suggestions",
+    "newPostScheduled": "New post scheduled for '{campaign}' on {platform}.",
+    "connectionRefreshed": "{platform} connection token refreshed successfully.",
+    "reportGenerated": "Weekly performance report generated.",
+    "newPostPublished": "You published a new post on {platform}."
+  },
+  "calendarPage": {
+    "title": "Content Calendar",
+    "newPost": "New Post",
+    "filterPlatforms": "Platforms",
+    "searchPlaceholder": "Search...",
+    "confirmRescheduleTitle": "Confirm Reschedule",
+    "confirmRescheduleDescription": "Are you sure you want to move \"{postTitle}\" to the new date/time?",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "postDeletedToastTitle": "Post Deleted",
+    "postDeletedToastDescription": "\"{postTitle}\" has been removed.",
+    "postRescheduledToastTitle": "Post Rescheduled",
+    "postRescheduledToastDescription": "\"{postTitle}\" has been moved.",
+    "analyticsComingSoon": "Analytics coming soon!",
+    "view": {
+      "month": "Month",
+      "week": "Week",
+      "day": "Day",
+      "agenda": "Agenda"
+    },
+    "today": "Today",
+    "previousPeriod": "Previous Period",
+    "nextPeriod": "Next Period"
+  },
+  "schedulePostPage": {
+    "titleNew": "Schedule New Post",
+    "titleEdit": "Edit Post",
+    "description": "Craft your message, select platforms, and set your schedule.",
+    "postContentLabel": "Post Content",
+    "postContentPlaceholder": "What's on your mind? Share an update, ask a question, or tell a story...",
+    "selectPlatformsLabel": "Select Platforms",
+    "scheduleDateLabel": "Schedule Date",
+    "pickDate": "Pick a date",
+    "scheduleTimeLabel": "Schedule Time",
+    "attachMediaLabel": "Attach Media (Optional)",
+    "mediaSelectedDescription": "Image selected. Click X to remove.",
+    "uploadMediaPrompt": "Click to upload",
+    "uploadMediaSubPrompt": "or drag and drop",
+    "uploadMediaHint": "PNG, JPG, GIF up to 10MB",
+    "internalNotesLabel": "Internal Notes (Optional)",
+    "internalNotesPlaceholder": "Add any internal notes, reminders, or campaign details here. Not visible publicly.",
+    "cancel": "Cancel",
+    "schedulePostButton": "Schedule Post",
+    "updatePostButton": "Update Post",
+    "editingPostToastTitle": "Editing Post",
+    "editingPostToastDescription": "You are editing \"{postTitle}\"...",
+    "errorToastTitle": "Error",
+    "errorEmptyContent": "Post content cannot be empty.",
+    "errorNoPlatform": "Please select at least one platform.",
+    "mediaSelectedToastTitle": "Media Selected",
+    "mediaSelectedToastDescription": "{fileName} is ready for the post.",
+    "mediaRemovedToastTitle": "Media Removed",
+    "postScheduledToastTitle": "Post Scheduled!",
+    "postUpdatedToastTitle": "Post Updated!",
+    "postScheduledToastDescription": "Your post \"{postTitle}\" has been scheduled.",
+    "postUpdatedToastDescription": "Your post \"{postTitle}\" has been updated."
+  },
+  "mediaPage": {
+    "title": "Media Library",
+    "description": "Manage all your images, videos, and other assets in one place.",
+    "uploadNewMedia": "Upload New Media",
+    "searchPlaceholder": "Search media by name or tag...",
+    "viewLabel": "View:",
+    "noMediaFoundTitle": "No Media Found",
+    "noMediaFoundDescription": "Try adjusting your search or upload new media.",
+    "editDetailsTooltip": "Edit Details",
+    "deleteMediaTooltip": "Delete Media",
+    "modalTitle": "{mediaName}",
+    "modalDescription": "{mediaType} - {mediaSize} - Uploaded on {uploadDate}",
+    "dimensionsLabel": "Dimensions:",
+    "durationLabel": "Duration:",
+    "tagsLabel": "Tags:",
+    "notAvailable": "N/A",
+    "previewNotAvailable": "Preview not available for this file type.",
+    "downloadButton": "Download",
+    "editDetailsButton": "Edit Details",
+    "uploadModalTitle": "Upload New Media",
+    "uploadModalDescription": "Drag and drop files here or click to browse. Supports images and videos.",
+    "uploadModalPrompt": "Click to upload",
+    "uploadModalSubPrompt": "or drag and drop",
+    "uploadModalHint": "PNG, JPG, GIF, MP4, MOV up to 50MB",
+    "cancelButton": "Cancel",
+    "deleteConfirmTitle": "Confirm Deletion",
+    "deleteConfirmDescription": "Are you sure you want to delete \"{mediaName}\"? This action cannot be undone.",
+    "deleteMediaButton": "Delete Media",
+    "uploadSuccessToast": "{count} file(s) added to library.",
+    "mediaDeletedToast": "{mediaName} has been removed."
+  }
+}

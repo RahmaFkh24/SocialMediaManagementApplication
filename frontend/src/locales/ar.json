@@ -1,0 +1,182 @@
+{
+  "layout": {
+    "nav": {
+      "dashboard": "لوحة التحكم",
+      "calendar": "التقويم",
+      "schedulePost": "جدولة منشور",
+      "mediaLibrary": "مكتبة الوسائط",
+      "settings": "الإعدادات"
+    },
+    "sidebar": {
+      "collapse": "طي"
+    },
+    "pageTitles": {
+        "dashboard": "لوحة التحكم",
+        "calendar": "التقويم",
+        "schedulePost": "جدولة منشور",
+        "mediaLibrary": "مكتبة الوسائط",
+        "settings": "الإعدادات",
+        "page": "صفحة"
+    },
+    "languageSwitcher": {
+      "selectLanguage": "اختر اللغة",
+      "english": "الإنجليزية",
+      "french": "الفرنسية",
+      "arabic": "العربية"
+    },
+    "notifications": {
+      "title": "الإشعارات",
+      "noNew": "لا توجد إشعارات جديدة"
+    },
+    "userMenu": {
+      "myAccount": "حسابي",
+      "profile": "الملف الشخصي",
+      "billing": "الفواتير",
+      "settings": "الإعدادات",
+      "logOut": "تسجيل الخروج"
+    }
+  },
+  "settingsPage": {
+    "title": "الإعدادات",
+    "description": "إدارة حسابك وإعدادات التطبيق.",
+    "languageSettings": {
+      "title": "إعدادات اللغة",
+      "description": "اختر لغتك المفضلة للتطبيق.",
+      "selectLabel": "لغة التطبيق"
+    },
+    "themeSettings": {
+        "title": "إعدادات المظهر",
+        "description": "تخصيص شكل وأسلوب التطبيق.",
+        "darkMode": "الوضع الداكن",
+        "toggleTheme": "تبديل المظهر"
+    },
+    "notificationSettings": {
+        "title": "تفضيلات الإشعارات",
+        "description": "إدارة كيفية تلقي الإشعارات.",
+        "emailNotifications": "إشعارات البريد الإلكتروني",
+        "pushNotifications": "إشعارات لحظية",
+        "inAppNotifications": "إشعارات داخل التطبيق"
+    },
+    "accountSettings": {
+        "title": "إعدادات الحساب",
+        "description": "تحديث معلوماتك الشخصية وكلمة المرور.",
+        "updateProfile": "تحديث الملف الشخصي",
+        "changePassword": "تغيير كلمة المرور"
+    },
+    "saveChanges": "حفظ التغييرات"
+  },
+  "dashboardPage": {
+    "totalPosts": "إجمالي المنشورات",
+    "acrossAllPlatforms": "عبر جميع المنصات",
+    "scheduledPosts": "المنشورات المجدولة",
+    "readyToGoLive": "جاهزة للنشر",
+    "connectedAccounts": "الحسابات المتصلة",
+    "platforms": "فيسبوك، انستغرام، لينكدإن، تويتر، تيك توك",
+    "engagementRate": "معدل التفاعل",
+    "averageAcrossPlatforms": "المتوسط عبر المنصات",
+    "bestTimesToPost": "أفضل الأوقات للنشر",
+    "bestTimesDescription": "أفضل 3 فترات زمنية موصى بها بناءً على تحليل التفاعل الأخير.",
+    "highEngagement": "تفاعل عالي",
+    "peak": "ذروة",
+    "high": "مرتفع",
+    "good": "جيد",
+    "recentActivity": "النشاط الأخير",
+    "recentActivityDescription": "آخر الإجراءات والتحديثات في حسابك.",
+    "viewAllActivity": "عرض كل النشاط",
+    "boostReach": "عزز وصولك!",
+    "boostReachDescription": "استكشف اقتراحات المحتوى الجديدة المدعومة بالذكاء الاصطناعي لزيادة التفاعل.",
+    "discoverAISuggestions": "اكتشف اقتراحات الذكاء الاصطناعي",
+    "newPostScheduled": "تمت جدولة منشور جديد لـ '{campaign}' على {platform}.",
+    "connectionRefreshed": "تم تحديث رمز اتصال {platform} بنجاح.",
+    "reportGenerated": "تم إنشاء تقرير الأداء الأسبوعي.",
+    "newPostPublished": "لقد نشرت منشورًا جديدًا على {platform}."
+  },
+  "calendarPage": {
+    "title": "تقويم المحتوى",
+    "newPost": "منشور جديد",
+    "filterPlatforms": "المنصات",
+    "searchPlaceholder": "بحث...",
+    "confirmRescheduleTitle": "تأكيد إعادة الجدولة",
+    "confirmRescheduleDescription": "هل أنت متأكد أنك تريد نقل \"{postTitle}\" إلى التاريخ/الوقت الجديد؟",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "postDeletedToastTitle": "تم حذف المنشور",
+    "postDeletedToastDescription": "تمت إزالة \"{postTitle}\".",
+    "postRescheduledToastTitle": "تمت إعادة جدولة المنشور",
+    "postRescheduledToastDescription": "تم نقل \"{postTitle}\".",
+    "analyticsComingSoon": "التحليلات قريبا!",
+     "view": {
+      "month": "شهر",
+      "week": "أسبوع",
+      "day": "يوم",
+      "agenda": "جدول أعمال"
+    },
+    "today": "اليوم",
+    "previousPeriod": "الفترة السابقة",
+    "nextPeriod": "الفترة التالية"
+  },
+  "schedulePostPage": {
+    "titleNew": "جدولة منشور جديد",
+    "titleEdit": "تعديل المنشور",
+    "description": "صياغة رسالتك، حدد المنصات، واضبط جدولك الزمني.",
+    "postContentLabel": "محتوى المنشور",
+    "postContentPlaceholder": "ماذا يدور في ذهنك؟ شارك تحديثًا، اطرح سؤالاً، أو اروِ قصة...",
+    "selectPlatformsLabel": "حدد المنصات",
+    "scheduleDateLabel": "تاريخ الجدولة",
+    "pickDate": "اختر تاريخًا",
+    "scheduleTimeLabel": "وقت الجدولة",
+    "attachMediaLabel": "إرفاق وسائط (اختياري)",
+    "mediaSelectedDescription": "تم تحديد الصورة. انقر فوق X للإزالة.",
+    "uploadMediaPrompt": "انقر للتحميل",
+    "uploadMediaSubPrompt": "أو قم بالسحب والإفلات",
+    "uploadMediaHint": "PNG, JPG, GIF حتى 10 ميجابايت",
+    "internalNotesLabel": "ملاحظات داخلية (اختياري)",
+    "internalNotesPlaceholder": "أضف أي ملاحظات داخلية أو تذكيرات أو تفاصيل حملة هنا. غير مرئية للعامة.",
+    "cancel": "إلغاء",
+    "schedulePostButton": "جدولة المنشور",
+    "updatePostButton": "تحديث المنشور",
+    "editingPostToastTitle": "تعديل المنشور",
+    "editingPostToastDescription": "أنت تقوم بتعديل \"{postTitle}\"...",
+    "errorToastTitle": "خطأ",
+    "errorEmptyContent": "لا يمكن أن يكون محتوى المنشور فارغًا.",
+    "errorNoPlatform": "يرجى تحديد منصة واحدة على الأقل.",
+    "mediaSelectedToastTitle": "تم تحديد الوسائط",
+    "mediaSelectedToastDescription": "{fileName} جاهز للمنشور.",
+    "mediaRemovedToastTitle": "تمت إزالة الوسائط",
+    "postScheduledToastTitle": "تمت جدولة المنشور!",
+    "postUpdatedToastTitle": "تم تحديث المنشور!",
+    "postScheduledToastDescription": "تمت جدولة منشورك \"{postTitle}\".",
+    "postUpdatedToastDescription": "تم تحديث منشورك \"{postTitle}\"."
+  },
+  "mediaPage": {
+    "title": "مكتبة الوسائط",
+    "description": "إدارة جميع الصور ومقاطع الفيديو والأصول الأخرى في مكان واحد.",
+    "uploadNewMedia": "تحميل وسائط جديدة",
+    "searchPlaceholder": "البحث في الوسائط بالاسم أو العلامة...",
+    "viewLabel": "عرض:",
+    "noMediaFoundTitle": "لم يتم العثور على وسائط",
+    "noMediaFoundDescription": "حاول تعديل بحثك أو تحميل وسائط جديدة.",
+    "editDetailsTooltip": "تعديل التفاصيل",
+    "deleteMediaTooltip": "حذف الوسائط",
+    "modalTitle": "{mediaName}",
+    "modalDescription": "{mediaType} - {mediaSize} - تم التحميل في {uploadDate}",
+    "dimensionsLabel": "الأبعاد:",
+    "durationLabel": "المدة:",
+    "tagsLabel": "العلامات:",
+    "notAvailable": "غير متاح",
+    "previewNotAvailable": "المعاينة غير متاحة لهذا النوع من الملفات.",
+    "downloadButton": "تحميل",
+    "editDetailsButton": "تعديل التفاصيل",
+    "uploadModalTitle": "تحميل وسائط جديدة",
+    "uploadModalDescription": "قم بسحب وإفلات الملفات هنا أو انقر للتصفح. يدعم الصور ومقاطع الفيديو.",
+    "uploadModalPrompt": "انقر للتحميل",
+    "uploadModalSubPrompt": "أو قم بالسحب والإفلات",
+    "uploadModalHint": "PNG, JPG, GIF, MP4, MOV حتى 50 ميجابايت",
+    "cancelButton": "إلغاء",
+    "deleteConfirmTitle": "تأكيد الحذف",
+    "deleteConfirmDescription": "هل أنت متأكد أنك تريد حذف \"{mediaName}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteMediaButton": "حذف الوسائط",
+    "uploadSuccessToast": "تمت إضافة {count} ملف (ملفات) إلى المكتبة.",
+    "mediaDeletedToast": "تمت إزالة {mediaName}."
+  }
+}

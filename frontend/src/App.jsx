@@ -18,6 +18,7 @@ import SettingsPage from '@/pages/SettingsPage';
 import { Toaster } from "@/components/ui/toaster";
 
 
+
 // Helpers
 const getIsNewUser = () => localStorage.getItem('isNewUser') === 'true';
 
@@ -57,7 +58,9 @@ const PublicOnlyRoute = ({ children }) => {
 
 function AppContent() {
   return (
+
     <>
+
       <Router>
         <Routes>
           {/* Public Routes */}
@@ -85,8 +88,10 @@ function AppContent() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
+
       <Toaster />
     </>
+
   );
 }
 

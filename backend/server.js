@@ -452,33 +452,32 @@ app.get('/api/messages', async (req, res, next) => {
     }
 });
 // Facebook Posts Endpoint
-app.get('/api/posts', async (req, res) => {
+
+app.get('/api/analytics/posts', async (req, res) => {
     try {
-        const response = await facebookClient.get(`${process.env.PAGE_ID}/posts`, {
-            fields: 'id,created_time,message,attachments{media},status_type,permalink_url'
+        const postsResponse = await facebookClient.get(`/${process.env.PAGE_ID}/posts`, {
+            params: {
+                fields: 'id,message,created_time,full_picture,permalink_url',
+                limit: 10 // Or any number you prefer
+            }
         });
 
-        const posts = response.data.data.map(post => ({
-            id: post.id,
-            content: post.message,
-            date: post.created_time,
-            media: post.attachments?.data[0]?.media?.image?.src || null,
-            status: post.status_type === 'scheduled_post' ? 'Scheduled' : 'Published',
-            url: post.permalink_url
-        }));
+        const posts = postsResponse.data?.data || [];
 
-        res.json({ success: true, data: posts });
+        res.json({
+            success: true,
+            data: posts
+        });
+
     } catch (error) {
-        console.error('Facebook API Error:', error);
+        console.error('Error fetching Facebook posts:', error.message);
         res.status(500).json({
             success: false,
-            error: {
-                message: error.message,
-                facebookError: error.response?.data?.error
-            }
+            error: error.message
         });
     }
 });
+
 // Comments Endpoint
 app.get('/api/comments', async (req, res, next) => {
     try {
@@ -929,6 +928,50 @@ app.get('/api/analytics/content', async (req, res, next) => {
         });
     }
 });
+
+
+//get posts 
+// GET /api/posts
+// Removed duplicate facebookClient declaration to avoid redeclaration error.
+
+// GET /api/posts
+// GET /api/posts
+app.get('/api/posts', async (req, res) => {
+    try {
+        const response = await facebookClient.get(`${process.env.PAGE_ID}/posts`, {
+            fields: 'id,message,created_time,attachments{media,type,url}'
+        });
+
+        const posts = response.data?.flatMap(post => {
+            // Sécurité : skip si post est nul
+            if (!post || typeof post !== 'object') return [];
+
+            return [{
+                id: post.id,
+                message: post.message || '',
+                created_time: post.created_time,
+                media_url: post.attachments?.data?.[0]?.media?.image?.src || null
+            }];
+        }) || [];
+
+        res.json({
+            success: true,
+            data: posts
+        });
+
+    } catch (error) {
+        console.error('Error in /api/posts:', error);
+        res.status(500).json({
+            success: false,
+            error: {
+                message: error.message,
+                details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+                facebookError: error.response?.data?.error
+            }
+        });
+    }
+});
+
 
 app.get('/api/analytics/dashboard', async (req, res, next) => {
     try {
