@@ -10,7 +10,7 @@ export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tool
 export { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from './dropdown-menu';
 export { Label } from './label';
 export { ScrollArea } from './scroll-area';
-
+export { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from './table';
 export { Progress } from './progress';
 export { Avatar, AvatarFallback, AvatarImage } from './avatar';
 export { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './alert-dialog';

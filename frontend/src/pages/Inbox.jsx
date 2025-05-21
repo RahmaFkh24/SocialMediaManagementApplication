@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Send, User, Clock, AlertCircle } from 'lucide-react';
+import { MessageSquare, Send, User, Clock, Trash2, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import axios from 'axios';
 import { formatDistanceToNow } from 'date-fns';
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+
+const ConfirmModal = ({ open, onClose, onConfirm, title, description }) => {
+    if (!open) return null;
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+            <div className="bg-white rounded-md p-6 max-w-sm w-full shadow-lg">
+                <h3 className="text-lg font-semibold mb-2">{title}</h3>
+                <p className="mb-4">{description}</p>
+                <div className="flex justify-end space-x-3">
+                    <Button variant="outline" onClick={onClose}>Annuler</Button>
+                    <Button variant="destructive" onClick={() => { onConfirm(); onClose(); }}>Supprimer</Button>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const Inbox = () => {
     const [messages, setMessages] = useState([]);
@@ -13,132 +30,116 @@ const Inbox = () => {
     const [replyText, setReplyText] = useState({});
     const [loading, setLoading] = useState({ messages: true, comments: true });
     const [error, setError] = useState(null);
+    const [toast, setToast] = useState(null);
+    const [confirmModal, setConfirmModal] = useState({ open: false, type: null, id: null });
+
+    const [searchMessages, setSearchMessages] = useState('');
+    const [searchComments, setSearchComments] = useState('');
+
+    const [platformFilter, setPlatformFilter] = useState('all');
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState({ messages: 1, comments: 1 });
 
     useEffect(() => {
-        const fetchMessages = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/api/messages');
-                setMessages(response.data.data || []);
-                setLoading((prev) => ({ ...prev, messages: false }));
-            } catch (err) {
-                console.error('Messages fetch error:', {
-                    message: err.message,
-                    response: err.response?.data,
-                    status: err.response?.status,
-                });
-                setError('Failed to fetch messages: ' + (err.response?.data?.error?.message || err.message));
-                setLoading((prev) => ({ ...prev, messages: false }));
-            }
-        };
-
-        const fetchComments = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/api/comments');
-                setComments(response.data.data || []);
-                setLoading((prev) => ({ ...prev, comments: false }));
-            } catch (err) {
-                console.error('Comments fetch error:', {
-                    message: err.message,
-                    response: err.response?.data,
-                    status: err.response?.status,
-                });
-                setError('Failed to fetch comments: ' + (err.response?.data?.error?.message || err.message));
-                setLoading((prev) => ({ ...prev, comments: false }));
-            }
-        };
-
         fetchMessages();
         fetchComments();
     }, []);
 
-    const handleReply = async (type, id, text) => {
-        if (!text.trim()) return;
-
+    const fetchMessages = async () => {
+        setLoading(prev => ({ ...prev, messages: true }));
         try {
-            await axios.post(`http://localhost:5000/api/reply/${type}/${id}`, {
-                message: text,
-            });
-            setReplyText({ ...replyText, [id]: '' });
-
-            if (type === 'message') {
-                const response = await axios.get('http://localhost:5000/api/messages');
-                setMessages(response.data.data || []);
-            } else {
-                const response = await axios.get('http://localhost:5000/api/comments');
-                setComments(response.data.data || []);
-            }
+            const res = await axios.get('http://localhost:5000/api/messages');
+            setMessages(res.data.data || []);
         } catch (err) {
-            console.error(`Reply error (${type}):`, {
-                message: err.message,
-                response: err.response?.data,
-                status: err.response?.status,
-            });
-            setError(`Failed to send ${type}: ` + (err.response?.data?.error?.message || err.message));
+            setError(err.message);
+        } finally {
+            setLoading(prev => ({ ...prev, messages: false }));
         }
     };
 
-    const renderMessageItem = (conversation) => {
-        const latestMessage = conversation.messages.data[0];
-        const sender = conversation.participants.data.find((p) => p.id !== process.env.REACT_APP_PAGE_ID);
-
-        return (
-            <div key={conversation.id} className="border-b py-4 last:border-b-0">
-                <div className="flex items-start space-x-3">
-                    <User className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
-                    <div className="flex-1">
-                        <div className="flex justify-between items-center">
-                            <span className="font-semibold text-sm">{sender?.name || 'Unknown'}</span>
-                            <span className="text-xs text-muted-foreground flex items-center">
-                                <Clock className="h-3 w-3 mr-1" />
-                                {formatDistanceToNow(new Date(latestMessage.created_time), { addSuffix: true })}
-                            </span>
-                        </div>
-                        <p className="text-sm text-foreground mt-1">{latestMessage.message}</p>
-                        <div className="mt-2 flex items-center space-x-2">
-                            <Input
-                                placeholder="Type your reply..."
-                                value={replyText[conversation.id] || ''}
-                                onChange={(e) => setReplyText({ ...replyText, [conversation.id]: e.target.value })}
-                                className="text-sm"
-                            />
-                            <Button
-                                size="sm"
-                                onClick={() => handleReply('message', conversation.id, replyText[conversation.id])}
-                            >
-                                <Send className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+    const fetchComments = async () => {
+        setLoading(prev => ({ ...prev, comments: true }));
+        try {
+            const res = await axios.get('http://localhost:5000/api/comments');
+            setComments(res.data.data || []);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(prev => ({ ...prev, comments: false }));
+        }
     };
 
-    const renderCommentItem = (comment) => (
-        <div key={comment.id} className="border-b py-4 last:border-b-0">
+    const handleReply = async (type, id, text) => {
+        if (!text.trim()) return;
+        try {
+            await axios.post(`http://localhost:5000/api/reply/${type}/${id}`, { message: text });
+            setReplyText(prev => ({ ...prev, [id]: '' }));
+            if (type === 'message') fetchMessages();
+            else fetchComments();
+            setToast({ type: 'success', message: 'Réponse envoyée' });
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const handleDelete = async (type, id) => {
+        try {
+            await axios.delete(`http://localhost:5000/api/${type}/${id}`);
+            if (type === 'messages') fetchMessages();
+            else fetchComments();
+            setToast({ type: 'success', message: `${type === 'messages' ? 'Message' : 'Commentaire'} supprimé` });
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const openDeleteConfirm = (type, id) => {
+        setConfirmModal({ open: true, type, id });
+    };
+
+    const renderItem = (item, type) => (
+        <div key={item.id} className="border-b py-4 last:border-0">
             <div className="flex items-start space-x-3">
-                <User className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
+                <User className="h-5 w-5 text-muted-foreground mt-1" />
                 <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                        <span className="font-semibold text-sm">{comment.from?.name || 'Unknown'}</span>
+                    <div className="flex justify-between">
+                        <span className="font-semibold text-sm">{item.from?.name || 'Inconnu'}</span>
                         <span className="text-xs text-muted-foreground flex items-center">
                             <Clock className="h-3 w-3 mr-1" />
-                            {formatDistanceToNow(new Date(comment.created_time), { addSuffix: true })}
+                            {formatDistanceToNow(new Date(item.created_time), { addSuffix: true })}
                         </span>
                     </div>
-                    <p className="text-sm text-foreground mt-1">{comment.message}</p>
+                    <p className="text-sm mt-1">{item.message}</p>
+
+                    {item.replies?.length > 0 && (
+                        <div className="mt-3 ml-6 border-l-2 border-muted-foreground pl-3 space-y-2">
+                            {item.replies.map(reply => {
+                                const isPage = reply.from?.name === 'Page';
+                                return (
+                                    <div
+                                        key={reply.id}
+                                        className={`text-sm ${isPage ? 'text-muted-foreground italic' : ''}`}
+                                        title={isPage ? 'Réponse de la page' : ''}
+                                    >
+                                        <User className="inline h-3 w-3 mr-1" />
+                                        {reply.message}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
                     <div className="mt-2 flex items-center space-x-2">
                         <Input
-                            placeholder="Type your reply..."
-                            value={replyText[comment.id] || ''}
-                            onChange={(e) => setReplyText({ ...replyText, [comment.id]: e.target.value })}
-                            className="text-sm"
+                            placeholder="Répondre..."
+                            value={replyText[item.id] || ''}
+                            onChange={(e) => setReplyText(prev => ({ ...prev, [item.id]: e.target.value }))}
                         />
-                        <Button
-                            size="sm"
-                            onClick={() => handleReply('comment', comment.id, replyText[comment.id])}
-                        >
+                        <Button size="sm" onClick={() => handleReply(type === 'messages' ? 'message' : 'comment', item.id, replyText[item.id])}>
                             <Send className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="destructive" onClick={() => openDeleteConfirm(type, item.id)}>
+                            <Trash2 className="h-4 w-4" />
                         </Button>
                     </div>
                 </div>
@@ -146,52 +147,147 @@ const Inbox = () => {
         </div>
     );
 
+    const applyFilters = (items, search, page) => {
+        const filtered = items.filter(i =>
+            (i.from?.name?.toLowerCase().includes(search.toLowerCase()) || false) ||
+            (i.message?.toLowerCase().includes(search.toLowerCase()) || false)
+        ).filter(i => platformFilter === 'all' || i.platform === platformFilter);
+
+        const start = (page - 1) * itemsPerPage;
+        return {
+            paginated: filtered.slice(start, start + itemsPerPage),
+            totalPages: Math.ceil(filtered.length / itemsPerPage)
+        };
+    };
+
+    const { paginated: filteredMessages, totalPages: totalMessagesPages } = applyFilters(messages, searchMessages, currentPage.messages);
+    const { paginated: filteredComments, totalPages: totalCommentsPages } = applyFilters(comments, searchComments, currentPage.comments);
+
     return (
-        <div className="p-6 ml-64 min-h-screen">
-            <Card className="max-w-4xl mx-auto">
-                <CardHeader>
-                    <CardTitle className="flex items-center text-xl">
-                        <MessageSquare className="h-5 w-5 mr-2" />
-                        Inbox
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {error && (
-                        <div className="mb-4 p-3 bg-destructive/10 text-destructive rounded-md flex items-center">
-                            <AlertCircle className="h-5 w-5 mr-2" />
-                            {error}
-                        </div>
-                    )}
-                    <Tabs defaultValue="messages" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2 mb-4">
-                            <TabsTrigger value="messages">Messages</TabsTrigger>
-                            <TabsTrigger value="comments">Comments</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="messages">
-                            {loading.messages ? (
-                                <p className="text-muted-foreground text-center">Loading messages...</p>
-                            ) : messages.length === 0 ? (
-                                <p className="text-muted-foreground text-center">No messages found.</p>
-                            ) : (
-                                <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
-                                    {messages.map(renderMessageItem)}
-                                </div>
-                            )}
-                        </TabsContent>
-                        <TabsContent value="comments">
-                            {loading.comments ? (
-                                <p className="text-muted-foreground text-center">Loading comments...</p>
-                            ) : comments.length === 0 ? (
-                                <p className="text-muted-foreground text-center">No comments found.</p>
-                            ) : (
-                                <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
-                                    {comments.map(renderCommentItem)}
-                                </div>
-                            )}
-                        </TabsContent>
-                    </Tabs>
-                </CardContent>
-            </Card>
+        <div className="flex flex-col min-h-screen w-full bg-gray-50">
+            <div className="flex-1 overflow-auto p-4">
+                <div className="max-w-5xl mx-auto w-full">
+                    <Card className="w-full">
+                        <CardHeader>
+                            <CardTitle className="flex items-center text-xl">
+                                <MessageSquare className="h-5 w-5 mr-2" /> Inbox
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {error && <div className="p-3 bg-red-100 text-red-700 rounded">{error}</div>}
+                            {toast && <div className="p-3 bg-green-100 text-green-700 rounded">{toast.message}</div>}
+
+                            <Tabs defaultValue="messages" className="w-full">
+                                <TabsList className="mb-4">
+                                    <TabsTrigger value="messages">Messages</TabsTrigger>
+                                    <TabsTrigger value="comments">Commentaires</TabsTrigger>
+                                </TabsList>
+
+                                <TabsContent value="messages">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <Search className="h-4 w-4 text-muted-foreground" />
+                                        <Input placeholder="Rechercher un message..." value={searchMessages} onChange={(e) => setSearchMessages(e.target.value)} />
+                                        <Select onValueChange={setPlatformFilter}>
+                                            <SelectTrigger className="w-36"><SelectValue placeholder="Plateforme" /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">Toutes</SelectItem>
+                                                <SelectItem value="facebook">Facebook</SelectItem>
+                                                <SelectItem value="instagram">Instagram</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <Select onValueChange={(val) => setItemsPerPage(Number(val))}>
+                                            <SelectTrigger className="w-20"><SelectValue placeholder="10 / page" /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="5">5</SelectItem>
+                                                <SelectItem value="10">10</SelectItem>
+                                                <SelectItem value="15">15</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    {loading.messages ? (
+                                        <div>Chargement des messages...</div>
+                                    ) : filteredMessages.length > 0 ? (
+                                        <>
+                                            {filteredMessages.map(msg => renderItem(msg, 'messages'))}
+                                            <div className="flex justify-between items-center mt-4">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => setCurrentPage(p => ({ ...p, messages: Math.max(p.messages - 1, 1) }))}
+                                                    disabled={currentPage.messages === 1}
+                                                >Précédent</Button>
+                                                <span className="text-sm">Page {currentPage.messages} / {totalMessagesPages}</span>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => setCurrentPage(p => ({ ...p, messages: Math.min(p.messages + 1, totalMessagesPages) }))}
+                                                    disabled={currentPage.messages === totalMessagesPages}
+                                                >Suivant</Button>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="text-sm text-muted-foreground">Aucun message trouvé.</div>
+                                    )}
+                                </TabsContent>
+
+                                <TabsContent value="comments">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <Search className="h-4 w-4 text-muted-foreground" />
+                                        <Input
+                                            placeholder="Rechercher un commentaire..."
+                                            value={searchComments}
+                                            onChange={(e) => setSearchComments(e.target.value)}
+                                        />
+                                        <Select onValueChange={setPlatformFilter}>
+                                            <SelectTrigger className="w-36"><SelectValue placeholder="Plateforme" /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">Toutes</SelectItem>
+                                                <SelectItem value="facebook">Facebook</SelectItem>
+                                                <SelectItem value="instagram">Instagram</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+
+                                    {loading.comments ? (
+                                        <div>Chargement des commentaires...</div>
+                                    ) : filteredComments.length > 0 ? (
+                                        <>
+                                            {filteredComments.map(comment => renderItem(comment, 'comments'))}
+                                            <div className="flex justify-between items-center mt-4">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => setCurrentPage(p => ({ ...p, comments: Math.max(p.comments - 1, 1) }))}
+                                                    disabled={currentPage.comments === 1}
+                                                >Précédent</Button>
+                                                <span className="text-sm">Page {currentPage.comments} / {totalCommentsPages}</span>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => setCurrentPage(p => ({ ...p, comments: Math.min(p.comments + 1, totalCommentsPages) }))}
+                                                    disabled={currentPage.comments === totalCommentsPages}
+                                                >Suivant</Button>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="text-sm text-muted-foreground">Aucun commentaire trouvé.</div>
+                                    )}
+                                </TabsContent>
+                            </Tabs>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+
+            <ConfirmModal
+                open={confirmModal.open}
+                onClose={() => setConfirmModal({ open: false, type: null, id: null })}
+                onConfirm={() => handleDelete(confirmModal.type, confirmModal.id)}
+                title="Confirmation"
+                description="Es-tu sûr de vouloir supprimer cet élément ? Cette action est irréversible."
+            />
         </div>
     );
 };

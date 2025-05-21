@@ -429,28 +429,9 @@ app.delete('/api/accounts/:id', async (req, res) => {
     }
 });
 
-// Messages Endpoint
-app.get('/api/messages', async (req, res, next) => {
-    try {
-        const response = await facebookClient.get(`${process.env.PAGE_ID}/conversations`, {
-            fields: 'id,messages{message,from,created_time},participants'
-        });
-        res.json({
-            success: true,
-            data: response.data || []
-        });
-    } catch (error) {
-        console.error('Error in /api/messages:', error);
-        res.status(500).json({
-            success: false,
-            error: {
-                message: error.message,
-                details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-                facebookError: error.response?.data?.error
-            }
-        });
-    }
-});
+
+
+
 // Facebook Posts Endpoint
 
 app.get('/api/analytics/posts', async (req, res) => {
@@ -502,6 +483,29 @@ app.get('/api/comments', async (req, res, next) => {
     }
 });
 
+// Messages Endpoint
+app.get('/api/messages', async (req, res, next) => {
+    try {
+        const response = await facebookClient.get(`${process.env.PAGE_ID}/conversations`, {
+            fields: 'id,messages{message,from,created_time},participants'
+        });
+        res.json({
+            success: true,
+            data: response.data || []
+        });
+    } catch (error) {
+        console.error('Error in /api/messages:', error);
+        res.status(500).json({
+            success: false,
+            error: {
+                message: error.message,
+                details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+                facebookError: error.response?.data?.error
+            }
+        });
+    }
+});
+
 // Reply Endpoint
 app.post('/api/reply/:type/:id', async (req, res, next) => {
     const { type, id } = req.params;
@@ -530,6 +534,7 @@ app.post('/api/reply/:type/:id', async (req, res, next) => {
         });
     }
 });
+
 
 // Analytics Endpoints
 app.get('/api/analytics/overview', async (req, res, next) => {
@@ -930,11 +935,7 @@ app.get('/api/analytics/content', async (req, res, next) => {
 });
 
 
-//get posts 
-// GET /api/posts
-// Removed duplicate facebookClient declaration to avoid redeclaration error.
 
-// GET /api/posts
 // GET /api/posts
 app.get('/api/posts', async (req, res) => {
     try {

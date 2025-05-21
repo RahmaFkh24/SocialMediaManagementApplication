@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Calendar as BigCalendar, Views } from 'react-big-calendar';
@@ -8,10 +8,16 @@ import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
-import { useCalendarEvents } from '@/pages/CalendarPage/hooks/useCalendarEvents';
 import { useCalendarState } from '@/pages/CalendarPage/hooks/useCalendarState';
 import { localizer, calendarMessages, calendarFormats } from '@/pages/CalendarPage/calendarUtils';
 import CustomEvent from '@/pages/CalendarPage/CustomEvent';
@@ -28,15 +34,15 @@ const CalendarPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const {
-    events,
-    setEvents,
-    filteredEvents,
-    searchTerm,
-    setSearchTerm,
-    selectedPlatforms,
-    setSelectedPlatforms,
-  } = useCalendarEvents();
+  const [events, setEvents] = React.useState([]);
+  const [filteredEvents, setFilteredEvents] = React.useState([]);
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [selectedPlatforms, setSelectedPlatforms] = React.useState({
+    Facebook: true,
+    Instagram: true,
+    Twitter: true,
+    LinkedIn: true,
+  });
 
   const {
     currentDate,
@@ -57,23 +63,78 @@ const CalendarPage = () => {
     setDraggedEventInfo,
   } = useCalendarState();
 
-  const handlePlatformToggle = React.useCallback((platformId) => {
-    setSelectedPlatforms(prev => ({ ...prev, [platformId]: !prev[platformId] }));
-  }, [setSelectedPlatforms]);
+  // Helper: group events by day (YYYY-MM-DD)
+  const groupEventsByDay = (eventsArray) => {
+    return eventsArray.reduce((acc, event) => {
+      const dayKey = event.start.toISOString().split('T')[0];
+      if (!acc[dayKey]) acc[dayKey] = [];
+      acc[dayKey].push(event);
+      return acc;
+    }, {});
+  };
 
-  const handleDeleteEvent = React.useCallback((eventId) => {
-    const event = events.find(e => e.id === eventId);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/posts');
+        const json = await response.json();
+
+        console.log('API response data:', json);
+
+        if (!json.success || !Array.isArray(json.data)) {
+          throw new Error('Invalid API response structure');
+        }
+
+        const formattedEvents = json.data.map(post => ({
+          ...post,
+          start: new Date(post.start),
+          end: new Date(post.end),
+        }));
+
+        setEvents(formattedEvents);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load calendar posts.',
+          variant: 'destructive',
+        });
+      }
+    };
+
+    fetchEvents();
+  }, [toast]);
+
+  // Filter events by platform and search term
+  useEffect(() => {
+    const filtered = events.filter(
+      (event) =>
+        selectedPlatforms[event.platform] &&
+        event.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredEvents(filtered);
+  }, [events, searchTerm, selectedPlatforms]);
+
+  const handlePlatformToggle = (platformId) => {
+    setSelectedPlatforms((prev) => ({
+      ...prev,
+      [platformId]: !prev[platformId],
+    }));
+  };
+
+  const handleDeleteEvent = (eventId) => {
+    const event = events.find((e) => e.id === eventId);
     if (event) {
       setEventToDelete(event);
       setIsConfirmDeleteOpen(true);
       setIsModalOpen(false);
     }
-  }, [events, setIsConfirmDeleteOpen, setEventToDelete, setIsModalOpen]);
+  };
 
-  const confirmDelete = React.useCallback(() => {
+  const confirmDelete = () => {
     if (eventToDelete) {
-      const updatedEvents = events.filter(e => e.id !== eventToDelete.id);
-      setEvents(updatedEvents);
+      const updated = events.filter((e) => e.id !== eventToDelete.id);
+      setEvents(updated);
       toast({
         title: 'Post Deleted',
         description: `${eventToDelete.title}`,
@@ -83,33 +144,33 @@ const CalendarPage = () => {
       setIsConfirmDeleteOpen(false);
       setEventToDelete(null);
     }
-  }, [eventToDelete, events, setEvents, toast, setSelectedEvent, setIsConfirmDeleteOpen, setEventToDelete]);
+  };
 
-  const handleSelectEvent = React.useCallback((event) => {
+  const handleSelectEvent = (event) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
-  }, [setSelectedEvent, setIsModalOpen]);
+  };
 
-  const handleNavigate = React.useCallback((newDate) => {
+  const handleNavigate = (newDate) => {
     setCurrentDate(newDate);
-  }, [setCurrentDate]);
+  };
 
-  const handleViewChange = React.useCallback((newView) => {
+  const handleViewChange = (newView) => {
     setCurrentView(newView);
-  }, [setCurrentView]);
+  };
 
-  const onEventDrop = React.useCallback(({ event, start, end, isAllDay }) => {
+  const onEventDrop = ({ event, start, end, isAllDay }) => {
     setDraggedEventInfo({ event, start, end, isAllDay });
     setIsDragConfirmOpen(true);
-  }, [setDraggedEventInfo, setIsDragConfirmOpen]);
+  };
 
-  const confirmEventDrop = React.useCallback(() => {
+  const confirmEventDrop = () => {
     if (draggedEventInfo) {
       const { event, start, end } = draggedEventInfo;
-      const updatedEvents = events.map(existingEvent =>
-        existingEvent.id === event.id ? { ...existingEvent, start, end } : existingEvent
+      const updated = events.map((e) =>
+        e.id === event.id ? { ...e, start, end } : e
       );
-      setEvents(updatedEvents);
+      setEvents(updated);
       toast({
         title: 'Post Rescheduled',
         description: `${event.title}`,
@@ -117,35 +178,28 @@ const CalendarPage = () => {
     }
     setIsDragConfirmOpen(false);
     setDraggedEventInfo(null);
-  }, [draggedEventInfo, events, setEvents, toast, setIsDragConfirmOpen, setDraggedEventInfo]);
+  };
 
-  const eventPropGetter = React.useCallback(
-    (event) => {
-      const platformConfig = {
-        Facebook: 'facebook',
-        Instagram: 'instagram',
-        LinkedIn: 'linkedin',
-        Twitter: 'twitter',
-      };
-      const platformClass = platformConfig[event.platform] || 'default-platform';
-      return {
-        className: platformClass,
-      };
-    },
-    []
-  );
+  const eventPropGetter = (event) => {
+    const platformClass = {
+      Facebook: 'facebook',
+      Instagram: 'instagram',
+      LinkedIn: 'linkedin',
+      Twitter: 'twitter',
+    }[event.platform] || 'default-platform';
 
-  // Calculate dynamic height based on view to make agenda view bigger
-  const calendarHeight = React.useMemo(() => {
-    if (currentView === Views.AGENDA) {
-      // Bigger height for agenda view (you can adjust the number)
-      return '700px';
-    }
-    return '500px'; // default height for other views
-  }, [currentView]);
+    return { className: platformClass };
+  };
+
+  const calendarHeight = currentView === Views.AGENDA ? '700px' : '500px';
+
+  // Example: Use grouped events by day in console or pass to sidebar if needed
+  const eventsGroupedByDay = groupEventsByDay(filteredEvents);
+  // console.log('Events grouped by day:', eventsGroupedByDay);
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 md:gap-6 h-full p-3 sm:p-4 md:p-3 bg-background">
+      {/* Main Calendar Section */}
       <motion.div
         className="flex-grow lg:order-1 flex flex-col"
         initial={{ opacity: 0, y: 20 }}
@@ -182,9 +236,9 @@ const CalendarPage = () => {
               formats={calendarFormats}
               components={{
                 event: CustomEvent,
-                toolbar: (toolbarProps) => (
+                toolbar: (props) => (
                   <CalendarToolbar
-                    {...toolbarProps}
+                    {...props}
                     currentView={currentView}
                     onViewChange={handleViewChange}
                   />
@@ -197,6 +251,7 @@ const CalendarPage = () => {
         </Card>
       </motion.div>
 
+      {/* Sidebar Section */}
       <motion.div
         className="lg:w-80 xl:w-96 flex-shrink-0 space-y-4 md:space-y-6 lg:order-2 w-full lg:max-w-xs xl:max-w-sm"
         initial={{ opacity: 0, x: 20 }}
@@ -211,6 +266,7 @@ const CalendarPage = () => {
         <StatusSummarySidebar events={events} />
       </motion.div>
 
+      {/* Event Modal */}
       <EventDetailsModal
         isOpen={isModalOpen}
         onOpenChange={(open) => {
@@ -218,28 +274,32 @@ const CalendarPage = () => {
           if (!open) setSelectedEvent(null);
         }}
         event={selectedEvent}
-        onEdit={(event) => { navigate('/schedule', { state: { postToEdit: event } }); setIsModalOpen(false); }}
         onDelete={handleDeleteEvent}
-        onViewAnalytics={() => toast({ title: "Analytics coming soon!" })}
       />
 
+      {/* Confirm Delete Dialog */}
       <ConfirmDeleteDialog
         isOpen={isConfirmDeleteOpen}
         onOpenChange={setIsConfirmDeleteOpen}
-        eventToDelete={eventToDelete}
-        onConfirmDelete={confirmDelete}
+        onConfirm={confirmDelete}
+        eventTitle={eventToDelete?.title}
       />
 
+      {/* Confirm Drag Drop Dialog */}
       <Dialog open={isDragConfirmOpen} onOpenChange={setIsDragConfirmOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirm Reschedule</DialogTitle>
+            <DialogTitle>Confirm reschedule</DialogTitle>
             <DialogDescription>
-              Are you sure you want to move "{draggedEventInfo?.event?.title}" to the new date/time?
+              Are you sure you want to reschedule the post{' '}
+              <strong>{draggedEventInfo?.event.title}</strong> to{' '}
+              {draggedEventInfo?.start.toLocaleString()}?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => { setIsDragConfirmOpen(false); setDraggedEventInfo(null); }}>Cancel</Button>
+            <Button variant="ghost" onClick={() => setIsDragConfirmOpen(false)}>
+              Cancel
+            </Button>
             <Button onClick={confirmEventDrop}>Confirm</Button>
           </DialogFooter>
         </DialogContent>
