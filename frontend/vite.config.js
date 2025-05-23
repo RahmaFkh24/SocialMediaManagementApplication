@@ -186,6 +186,7 @@ export default defineConfig({
 		},
 		historyApiFallback: true, // <-- This line enables fallback routing
 	},
+
 	resolve: {
 		extensions: ['.jsx', '.js', '.tsx', '.ts', '.json',],
 		alias: {

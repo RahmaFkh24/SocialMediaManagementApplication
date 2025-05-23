@@ -58,6 +58,8 @@ const statusColors = {
 
 const PostsPage = () => {
   const [posts, setPosts] = useState([]);
+  const [deletingId, setDeletingId] = useState(null); // Add this line
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('');
@@ -114,15 +116,27 @@ const PostsPage = () => {
   );
 
   const handleDelete = async (id) => {
+    setDeletingId(id);
     try {
-      await axios.delete(`http://localhost:5000/api/posts/${id}`);
-      setPosts(prev => prev.filter(post => post.id !== id));
+      const response = await axios.delete(`http://localhost:5000/api/posts/${id}`);
+
+      // Vérification structurée de la réponse
+      if (response.data?.success) {
+        setPosts(prev => prev.filter(post => post.id !== id));
+        setError(null);
+      } else {
+        throw new Error(response.data?.error?.message || 'Échec de la suppression');
+      }
     } catch (err) {
-      alert("Erreur lors de la suppression.");
-      console.error(err);
+      const errorMessage = err.response?.data?.error?.message
+        || err.message
+        || 'Erreur inconnue';
+
+      setError(`Erreur : ${errorMessage}`);
+    } finally {
+      setDeletingId(null);
     }
   };
-
   const handleEdit = async () => {
     try {
       await axios.put(`http://localhost:5000/api/posts/${editingPost.id}`, {

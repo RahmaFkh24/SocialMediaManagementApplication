@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
@@ -11,14 +10,11 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import PlatformChip from '@/components/PlatformChip';
 import { DateTimePicker } from '@/components/DateTimePicker';
 import { useToast } from "@/components/ui/use-toast"; // Import useToast
-import { Facebook, Instagram, Twitter, Linkedin, Image as ImageIcon, Video, Smile, Send } from 'lucide-react';
+import { Facebook, Instagram, Image as ImageIcon, Smile, Send } from 'lucide-react';
 
 const platformOptions = [
     { id: 'facebook', label: 'Facebook', icon: Facebook, color: 'bg-blue-600 text-white' },
     { id: 'instagram', label: 'Instagram', icon: Instagram, color: 'bg-pink-500 text-white' },
-    // Removed Twitter and LinkedIn based on user request in follow-up prompt implicitly
-    // { id: 'twitter', label: 'Twitter', icon: Twitter, color: 'bg-blue-400 text-white' },
-    // { id: 'linkedin', label: 'LinkedIn', icon: Linkedin, color: 'bg-blue-700 text-white' },
 ];
 
 const containerVariants = {
@@ -30,7 +26,6 @@ const itemVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: { opacity: 1, scale: 1 },
 };
-
 
 const SchedulerPage = () => {
     const navigate = useNavigate(); // Hook for navigation
@@ -88,7 +83,6 @@ const SchedulerPage = () => {
                 status: scheduleDate && scheduleDate > new Date() ? 'Scheduled' : 'Published', // Determine status based on date
                 date: scheduleDate || new Date(),
                 thumbnail: mediaPreview, // Store preview URL (in real app, store actual URL)
-                // Add platformIcons, statusIcon, statusColor based on logic in PostsPage if needed here
             };
             posts.push(newPost);
             localStorage.setItem('scheduledPosts', JSON.stringify(posts));
@@ -97,12 +91,6 @@ const SchedulerPage = () => {
                 title: `Post ${newPost.status}!`,
                 description: `Your post has been successfully ${newPost.status.toLowerCase()}.`,
             });
-
-            // Reset form (optional)
-            // setPostContent('');
-            // setSelectedPlatforms([]);
-            // setScheduleDate(null);
-            // setMediaPreview(null);
 
             navigate('/posts'); // Navigate to the posts page after success
 
@@ -116,7 +104,6 @@ const SchedulerPage = () => {
             setIsLoading(false);
         }
     };
-
 
     return (
         <motion.div
@@ -167,7 +154,7 @@ const SchedulerPage = () => {
                             {mediaPreview && (
                                 <div className="mt-2 border rounded-md overflow-hidden max-h-40 w-fit">
                                     {mediaPreview.startsWith('data:image') ? (
-                                        <img-replace src={mediaPreview} alt="Media preview" className="object-contain max-h-40" />
+                                        <img src={mediaPreview} alt="Media preview" className="object-contain max-h-40" />
                                     ) : mediaPreview.startsWith('data:video') ? (
                                         <video src={mediaPreview} controls className="object-contain max-h-40" />
                                     ) : null}
@@ -192,7 +179,7 @@ const SchedulerPage = () => {
                                             isSelected={selectedPlatforms.includes(platform.id)}
                                             onClick={() => !isLoading && togglePlatform(platform.id)}
                                             color={platform.color}
-                                            disabled={isLoading} // Add disabled prop to PlatformChip if it supports it
+                                            disabled={isLoading}
                                         />
                                     </motion.div>
                                 ))}
@@ -220,7 +207,6 @@ const SchedulerPage = () => {
                                         : 'Post Now'}
                             </Button>
                         </div>
-
                     </CardContent>
                 </Card>
 
@@ -235,7 +221,6 @@ const SchedulerPage = () => {
                             <div className="space-y-2">
                                 <Label>Previewing on: {platformOptions.find(p => p.id === selectedPlatforms[0])?.label || 'Platform'}</Label>
                                 <div className="border rounded-lg p-4 bg-background shadow-sm">
-                                    {/* Simple Preview Structure */}
                                     <div className="flex items-center space-x-2 mb-2">
                                         <Avatar>
                                             <AvatarImage src="https://i.pravatar.cc/150?img=3" />
@@ -250,7 +235,7 @@ const SchedulerPage = () => {
                                     {mediaPreview && (
                                         <div className="mt-2 rounded-md overflow-hidden max-h-60 flex justify-center">
                                             {mediaPreview.startsWith('data:image') ? (
-                                                <img-replace src={mediaPreview} alt="Preview media" className="object-contain max-h-60" />
+                                                <img src={mediaPreview} alt="Preview media" className="object-contain max-h-60" />
                                             ) : mediaPreview.startsWith('data:video') ? (
                                                 <video src={mediaPreview} controls className="object-contain max-h-60" />
                                             ) : null}

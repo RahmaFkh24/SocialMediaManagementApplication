@@ -114,6 +114,72 @@ passport.use(new FacebookStrategy({
 
 // Enhanced Facebook Graph API Client with validation
 const facebookClient = {
+    delete: async (endpoint, params = {}) => {
+        try {
+            if (!process.env.PAGE_ACCESS_TOKEN) {
+                throw new Error('Facebook Page Access Token is not configured');
+            }
+            if (!process.env.PAGE_ID) {
+                throw new Error('Facebook Page ID is not configured');
+            }
+
+            const token = process.env.PAGE_ACCESS_TOKEN.trim();
+            if (!token.startsWith('EAA')) {
+                throw new Error('Invalid Facebook Page Access Token format.');
+            }
+
+            let pageAccessToken = token;
+
+            // Validate token and get correct page token
+            const accountsResponse = await axios.get(
+                `https://graph.facebook.com/v22.0/me/accounts`,
+                {
+                    params: {
+                        access_token: token,
+                        fields: 'id,name,access_token'
+                    }
+                }
+            );
+
+            const targetPage = accountsResponse.data.data.find(page => page.id === process.env.PAGE_ID);
+            if (!targetPage) {
+                console.error('Available pages:', accountsResponse.data.data.map(p => ({ id: p.id, name: p.name })));
+                throw new Error(`Page ID ${process.env.PAGE_ID} not found.`);
+            }
+
+            pageAccessToken = targetPage.access_token;
+
+            console.log(`Making Facebook API DELETE request to: ${endpoint}`);
+            console.log('Request params:', JSON.stringify(params, null, 2));
+
+            const response = await axios.delete(
+                `https://graph.facebook.com/v22.0/${endpoint}`,
+                {
+                    params: {
+                        access_token: pageAccessToken,
+                        ...params
+                    },
+                    timeout: 10000
+                }
+            );
+
+            console.log('Facebook API DELETE response status:', response.status);
+            return response.data;
+        } catch (error) {
+            console.error('Facebook API DELETE Error:', {
+                endpoint,
+                params,
+                status: error.response?.status,
+                data: error.response?.data,
+                message: error.message
+            });
+
+            const errorMessage = error.response?.data?.error?.message || error.message || 'Facebook API Error';
+            const errorCode = error.response?.data?.error?.code || 500;
+            throw new Error(`${errorCode}: ${errorMessage}`);
+        }
+    }
+    ,
     get: async (endpoint, params = {}) => {
         try {
             if (!process.env.PAGE_ACCESS_TOKEN) {
@@ -972,7 +1038,128 @@ app.get('/api/posts', async (req, res) => {
         });
     }
 });
+// POST /api/posts
+app.post('/api/posts', async (req, res) => {
+    try {
+        const {
+            content,
+            platforms,
+            date,
+            thumbnail // This could be base64 or a URL, depending on implementation
+        } = req.body;
 
+        // Validation
+        if (!content || !platforms || platforms.length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'Content and at least one platform are required'
+            });
+        }
+
+        const scheduledDate = date ? new Date(date) : new Date();
+        const now = new Date();
+
+        const newPost = {
+            id: Date.now(),
+            content,
+            platforms,
+            status: scheduledDate > now ? 'Scheduled' : 'Published',
+            date: scheduledDate,
+            thumbnail,
+        };
+
+        // Store to DB or simulate with local array for now
+        // Example: write to in-memory array or push to MongoDB
+        // For now, simulate with success response
+        return res.status(201).json({
+            success: true,
+            message: 'Post saved successfully',
+            data: newPost
+        });
+
+    } catch (error) {
+        console.error('Error saving post:', error);
+        return res.status(500).json({
+            success: false,
+            error: 'Server error'
+        });
+    }
+});
+
+// the update
+app.put('/api/posts/:postId', async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const { message } = req.body;
+
+        if (!message) {
+            return res.status(400).json({
+                success: false,
+                error: { message: 'Message is required to update post.' }
+            });
+        }
+
+        // Update post message on Facebook
+        await facebookClient.post(`/${postId}`, {
+            message
+        });
+
+        res.json({
+            success: true,
+            data: {
+                postId,
+                message
+            }
+        });
+    } catch (error) {
+        console.error(`Error in PUT /api/posts/${req.params.postId}:`, error);
+        res.status(500).json({
+            success: false,
+            error: {
+                message: error.message,
+                details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+                facebookError: error.response?.data?.error
+            }
+        });
+    }
+});
+//the delete post
+
+app.delete('/api/posts/:id', async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        // Validation de l'ID
+        if (!/^\d+_\d+$/.test(postId)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Format d\'ID de post Facebook invalide'
+            });
+        }
+
+        // Appel API Facebook correct
+        const response = await facebookClient.delete(`/${postId}`, {
+            params: {
+                access_token: process.env.PAGE_ACCESS_TOKEN
+            }
+        });
+
+        if (response.data.success) {
+            res.json({ success: true });
+        } else {
+            throw new Error('Échec de la suppression sur Facebook');
+        }
+    } catch (error) {
+        console.error('Erreur DELETE:', error);
+        res.status(500).json({
+            success: false,
+            error: {
+                message: error.message,
+                facebookError: error.response?.data?.error || null
+            }
+        });
+    }
+});
 
 app.get('/api/analytics/dashboard', async (req, res, next) => {
     try {
