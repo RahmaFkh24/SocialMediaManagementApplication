@@ -16,8 +16,8 @@ const ConfirmModal = ({ open, onClose, onConfirm, title, description }) => {
                 <h3 className="text-lg font-semibold mb-2">{title}</h3>
                 <p className="mb-4">{description}</p>
                 <div className="flex justify-end space-x-3">
-                    <Button variant="outline" onClick={onClose}>Annuler</Button>
-                    <Button variant="destructive" onClick={() => { onConfirm(); onClose(); }}>Supprimer</Button>
+                    <Button variant="outline" onClick={onClose}>Cancel</Button>
+                    <Button variant="destructive" onClick={() => { onConfirm(); onClose(); }}>Delete</Button>
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@ const Inbox = () => {
             setReplyText(prev => ({ ...prev, [id]: '' }));
             if (type === 'message') fetchMessages();
             else fetchComments();
-            setToast({ type: 'success', message: 'Réponse envoyée' });
+            setToast({ type: 'success', message: 'Response sent' });
         } catch (err) {
             setError(err.message);
         }
@@ -119,7 +119,7 @@ const Inbox = () => {
                                     <div
                                         key={reply.id}
                                         className={`text-sm ${isPage ? 'text-muted-foreground italic' : ''}`}
-                                        title={isPage ? 'Réponse de la page' : ''}
+                                        title={isPage ? 'Page response' : ''}
                                     >
                                         <User className="inline h-3 w-3 mr-1" />
                                         {reply.message}
@@ -131,7 +131,7 @@ const Inbox = () => {
 
                     <div className="mt-2 flex items-center space-x-2">
                         <Input
-                            placeholder="Répondre..."
+                            placeholder="Reply..."
                             value={replyText[item.id] || ''}
                             onChange={(e) => setReplyText(prev => ({ ...prev, [item.id]: e.target.value }))}
                         />
@@ -180,17 +180,17 @@ const Inbox = () => {
                             <Tabs defaultValue="messages" className="w-full">
                                 <TabsList className="mb-4">
                                     <TabsTrigger value="messages">Messages</TabsTrigger>
-                                    <TabsTrigger value="comments">Commentaires</TabsTrigger>
+                                    <TabsTrigger value="comments">Comments</TabsTrigger>
                                 </TabsList>
 
                                 <TabsContent value="messages">
                                     <div className="flex items-center gap-2 mb-4">
                                         <Search className="h-4 w-4 text-muted-foreground" />
-                                        <Input placeholder="Rechercher un message..." value={searchMessages} onChange={(e) => setSearchMessages(e.target.value)} />
+                                        <Input placeholder="Search a message..." value={searchMessages} onChange={(e) => setSearchMessages(e.target.value)} />
                                         <Select onValueChange={setPlatformFilter}>
-                                            <SelectTrigger className="w-36"><SelectValue placeholder="Plateforme" /></SelectTrigger>
+                                            <SelectTrigger className="w-36"><SelectValue placeholder="Plateform" /></SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="all">Toutes</SelectItem>
+                                                <SelectItem value="all">All</SelectItem>
                                                 <SelectItem value="facebook">Facebook</SelectItem>
                                                 <SelectItem value="instagram">Instagram</SelectItem>
                                             </SelectContent>
@@ -206,7 +206,7 @@ const Inbox = () => {
                                     </div>
 
                                     {loading.messages ? (
-                                        <div>Chargement des messages...</div>
+                                        <div>Loading messages...</div>
                                     ) : filteredMessages.length > 0 ? (
                                         <>
                                             {filteredMessages.map(msg => renderItem(msg, 'messages'))}
@@ -216,18 +216,18 @@ const Inbox = () => {
                                                     variant="outline"
                                                     onClick={() => setCurrentPage(p => ({ ...p, messages: Math.max(p.messages - 1, 1) }))}
                                                     disabled={currentPage.messages === 1}
-                                                >Précédent</Button>
+                                                >Previous</Button>
                                                 <span className="text-sm">Page {currentPage.messages} / {totalMessagesPages}</span>
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
                                                     onClick={() => setCurrentPage(p => ({ ...p, messages: Math.min(p.messages + 1, totalMessagesPages) }))}
                                                     disabled={currentPage.messages === totalMessagesPages}
-                                                >Suivant</Button>
+                                                >Next</Button>
                                             </div>
                                         </>
                                     ) : (
-                                        <div className="text-sm text-muted-foreground">Aucun message trouvé.</div>
+                                        <div className="text-sm text-muted-foreground">No messages found.</div>
                                     )}
                                 </TabsContent>
 
@@ -235,14 +235,14 @@ const Inbox = () => {
                                     <div className="flex items-center gap-2 mb-4">
                                         <Search className="h-4 w-4 text-muted-foreground" />
                                         <Input
-                                            placeholder="Rechercher un commentaire..."
+                                            placeholder="Search a comment..."
                                             value={searchComments}
                                             onChange={(e) => setSearchComments(e.target.value)}
                                         />
                                         <Select onValueChange={setPlatformFilter}>
                                             <SelectTrigger className="w-36"><SelectValue placeholder="Plateforme" /></SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="all">Toutes</SelectItem>
+                                                <SelectItem value="all">All</SelectItem>
                                                 <SelectItem value="facebook">Facebook</SelectItem>
                                                 <SelectItem value="instagram">Instagram</SelectItem>
                                             </SelectContent>
@@ -251,7 +251,7 @@ const Inbox = () => {
 
 
                                     {loading.comments ? (
-                                        <div>Chargement des commentaires...</div>
+                                        <div>Loading comments...</div>
                                     ) : filteredComments.length > 0 ? (
                                         <>
                                             {filteredComments.map(comment => renderItem(comment, 'comments'))}
@@ -261,18 +261,18 @@ const Inbox = () => {
                                                     variant="outline"
                                                     onClick={() => setCurrentPage(p => ({ ...p, comments: Math.max(p.comments - 1, 1) }))}
                                                     disabled={currentPage.comments === 1}
-                                                >Précédent</Button>
+                                                >Previous</Button>
                                                 <span className="text-sm">Page {currentPage.comments} / {totalCommentsPages}</span>
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
                                                     onClick={() => setCurrentPage(p => ({ ...p, comments: Math.min(p.comments + 1, totalCommentsPages) }))}
                                                     disabled={currentPage.comments === totalCommentsPages}
-                                                >Suivant</Button>
+                                                >Next</Button>
                                             </div>
                                         </>
                                     ) : (
-                                        <div className="text-sm text-muted-foreground">Aucun commentaire trouvé.</div>
+                                        <div className="text-sm text-muted-foreground">No comments found.</div>
                                     )}
                                 </TabsContent>
                             </Tabs>
@@ -286,7 +286,7 @@ const Inbox = () => {
                 onClose={() => setConfirmModal({ open: false, type: null, id: null })}
                 onConfirm={() => handleDelete(confirmModal.type, confirmModal.id)}
                 title="Confirmation"
-                description="Es-tu sûr de vouloir supprimer cet élément ? Cette action est irréversible."
+                description="Are you sure you want to delete this item? This action is irreversible.."
             />
         </div>
     );

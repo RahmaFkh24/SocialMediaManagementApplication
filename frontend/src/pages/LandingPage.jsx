@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { Zap, CheckCircle, Users, BarChart2, Bot, Repeat, Users2, Rocket, Star } from 'lucide-react';
-import LandingHeader from '@/components/LandingHeader'; // Import Header
-import LandingFooter from '@/components/LandingFooter'; // Import Footer
+import LandingHeader from '@/components/LandingHeader';
+import LandingFooter from '@/components/LandingFooter';
 
 
 const containerVariants = {
@@ -43,7 +43,7 @@ const features = [
 ];
 
 const testimonials = [
-  { quote: "Social Pulse revolutionized how we manage our clients' accounts. The AI writer is a lifesaver!", author: "Marketing Agency Owner" },
+  { quote: "Das Haus revolutionized how we manage our clients' accounts. The AI writer is a lifesaver!", author: "Marketing Agency Owner" },
   { quote: "Finally, a tool that brings all my platforms together. Scheduling is so much easier now.", author: "Freelance Content Creator" },
   { quote: "The analytics are clear and actionable. We've seen a real improvement in engagement.", author: "Startup Founder" },
 ];
@@ -51,9 +51,9 @@ const testimonials = [
 
 const LandingPage = () => {
   return (
-    <div className="flex flex-col min-h-screen"> {/* Wrapper div for flex layout */}
-      <LandingHeader /> {/* Add Header */}
-      <motion.main /* Changed div to main for semantics */
+    <div className="flex flex-col min-h-screen">
+      <LandingHeader />
+      <motion.main
         className="flex-grow flex flex-col items-center p-6 pt-24 md:pt-32 bg-gradient-to-b from-background via-purple-50 dark:via-purple-900/10 to-blue-50 dark:to-blue-900/10"
         variants={containerVariants}
         initial="hidden"
@@ -70,10 +70,10 @@ const LandingPage = () => {
             <Zap className="h-16 w-16 md:h-20 md:w-20 text-primary inline-block p-3 bg-primary/10 rounded-full shadow-lg" />
           </motion.div>
           <h1 className="text-4xl md:text-6xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-600 to-pink-600">
-            🎯 Welcome to Social Pulse!
+            🎯 Welcome to Das haus!
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground mb-8">
-            Social Pulse is the all-in-one solution to effectively manage all your social media accounts. Create, schedule, organize, analyze, and automate your posts from one place.
+            Das haus is the all-in-one solution to effectively manage all your social media accounts. Create, schedule, organize, analyze, and automate your posts from one place.
           </p>
           <Link to="https://buy.stripe.com/test_7sYaEWgSD8cOcWF8Lz2oE00">
             <Button size="lg" className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white shadow-lg transform hover:scale-105 transition-transform duration-300">

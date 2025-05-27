@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, Filter, Image as ImageIcon, Video, Trash2, Search, CheckCircle } from 'lucide-react'; // Import CheckCircle
 import { useToast } from "@/components/ui/use-toast";
-import { format } from 'date-fns'; // Import format
+import { format } from 'date-fns';
 
 // Mock Media Data
 const initialMedia = [

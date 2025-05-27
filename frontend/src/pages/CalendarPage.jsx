@@ -193,9 +193,7 @@ const CalendarPage = () => {
 
   const calendarHeight = currentView === Views.AGENDA ? '700px' : '500px';
 
-  // Example: Use grouped events by day in console or pass to sidebar if needed
   const eventsGroupedByDay = groupEventsByDay(filteredEvents);
-  // console.log('Events grouped by day:', eventsGroupedByDay);
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 md:gap-6 h-full p-3 sm:p-4 md:p-3 bg-background">

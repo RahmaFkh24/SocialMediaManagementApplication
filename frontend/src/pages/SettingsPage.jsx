@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Bell, Palette, Power, User, Upload } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext'; // Import useAuth
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from "@/components/ui/use-toast";
 
 // Mock data for parts not covered by auth context
@@ -37,11 +37,11 @@ const itemVariants = {
 };
 
 const SettingsPage = () => {
-  const { currentUser, signup } = useAuth(); // Get currentUser and signup for potential updates
+  const { currentUser, signup } = useAuth();
   const { toast } = useToast();
 
   const [name, setName] = useState(currentUser?.name || '');
-  const [email, setEmail] = useState(currentUser?.email || ''); // Email should be from auth
+  const [email, setEmail] = useState(currentUser?.email || '');
   const [notifications, setNotifications] = useState(initialSettings.notifications);
   const [theme, setTheme] = useState(initialSettings.theme);
   const [avatarPreview, setAvatarPreview] = useState(currentUser?.avatar || `https://i.pravatar.cc/150?u=${currentUser?.email}`);
@@ -93,23 +93,13 @@ const SettingsPage = () => {
   };
 
   const handleProfileSave = () => {
-    // In a real app, you'd call an API to update user details.
-    // For this mock, we can update the name in AuthContext if it supports it,
-    // or just show a success message.
-    // The email is typically not changed here.
-    // The AuthProvider's signup/login functions handle user data persistence.
-    // We might need a dedicated updateUser function in AuthContext for this.
-    // For now, let's assume we can update the name locally for display.
-    // If you want to persist this change, AuthContext needs an updateUser function.
+
     if (currentUser && currentUser.email) {
-      // This is a simplified update. Ideally, AuthContext would handle this.
       const users = JSON.parse(localStorage.getItem('users') || '{}');
       if (users[currentUser.email]) {
         users[currentUser.email].name = name;
         localStorage.setItem('users', JSON.stringify(users));
 
-        // Update currentUser in AuthContext if possible (requires an updateUser method)
-        // For now, the header will update on next login or if AuthContext re-reads from localStorage
       }
     }
     toast({ title: "Profile Saved", description: "Your profile information has been updated." });

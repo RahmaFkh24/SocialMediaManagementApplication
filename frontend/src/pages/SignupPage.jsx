@@ -14,7 +14,7 @@ const SignupPage = () => {
   const navigate = useNavigate();
   const { signup } = useAuth();
   const { toast } = useToast();
-  const [name, setName] = useState(''); // Added name state
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -53,7 +53,6 @@ const SignupPage = () => {
       // Signup sets new user flag, navigate to onboarding
       navigate('/onboarding');
     } else {
-      // Toast is shown by AuthContext if user exists
     }
   };
 

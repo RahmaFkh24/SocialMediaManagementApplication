@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom'; // Import useLocation
+import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import { Toaster } from '@/components/ui/toaster';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Layout = () => {
-  const location = useLocation(); // Get location object
+  const location = useLocation();
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">

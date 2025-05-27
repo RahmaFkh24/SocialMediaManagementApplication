@@ -1003,39 +1003,59 @@ app.get('/api/analytics/content', async (req, res, next) => {
 
 
 // GET /api/posts
+const Post = require('./models/Post');
+
 app.get('/api/posts', async (req, res) => {
     try {
+        const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes cache
+
+        // Try to get cached posts first
+        const cachedPosts = await Post.find({
+            pageId: process.env.PAGE_ID,
+            updatedAt: { $gt: new Date(Date.now() - CACHE_DURATION) }
+        }).sort({ created_time: -1 });
+
+        if (cachedPosts.length > 0) {
+            return res.json({ success: true, data: cachedPosts });
+        }
+
+        // If no cache, fetch from Facebook
         const response = await facebookClient.get(`${process.env.PAGE_ID}/posts`, {
             fields: 'id,message,created_time,attachments{media,type,url}'
         });
 
-        const posts = response.data?.flatMap(post => {
-            // Sécurité : skip si post est nul
-            if (!post || typeof post !== 'object') return [];
+        const posts = response.data || [];
 
-            return [{
-                id: post.id,
-                message: post.message || '',
-                created_time: post.created_time,
-                media_url: post.attachments?.data?.[0]?.media?.image?.src || null
-            }];
-        }) || [];
+        // Cache posts in MongoDB
+        const bulkOps = posts.map(post => ({
+            updateOne: {
+                filter: { postId: post.id },
+                update: {
+                    $set: {
+                        postId: post.id,
+                        pageId: process.env.PAGE_ID,
+                        message: post.message,
+                        created_time: new Date(post.created_time),
+                        attachments: post.attachments,
+                        lastFetched: new Date()
+                    }
+                },
+                upsert: true
+            }
+        }));
 
-        res.json({
-            success: true,
-            data: posts
-        });
+        await Post.bulkWrite(bulkOps);
+
+        // Get fresh cached version
+        const freshPosts = await Post.find({ pageId: process.env.PAGE_ID })
+            .sort({ created_time: -1 })
+            .limit(100);
+
+        res.json({ success: true, data: freshPosts });
 
     } catch (error) {
         console.error('Error in /api/posts:', error);
-        res.status(500).json({
-            success: false,
-            error: {
-                message: error.message,
-                details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-                facebookError: error.response?.data?.error
-            }
-        });
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 // POST /api/posts

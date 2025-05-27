@@ -23,7 +23,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
-} from '@/components/ui'; // Your UI lib
+} from '@/components/ui';
 import {
   Facebook,
   Instagram,
@@ -58,7 +58,7 @@ const statusColors = {
 
 const PostsPage = () => {
   const [posts, setPosts] = useState([]);
-  const [deletingId, setDeletingId] = useState(null); // Add this line
+  const [deletingId, setDeletingId] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -168,7 +168,7 @@ const PostsPage = () => {
   return (
     <div className="flex flex-col min-h-screen w-full p-4 md:p-6 bg-muted/50">
       <div className="flex flex-col max-w-7xl mx-auto flex-grow w-full">
-        <h1 className="text-3xl font-bold tracking-tight mb-6">Toutes les publications</h1>
+        <h1 className="text-3xl font-bold tracking-tight mb-6">All posts</h1>
 
         {/* Filters & Controls */}
         <div className="flex flex-wrap gap-4 mb-4 items-center justify-between">
@@ -180,13 +180,13 @@ const PostsPage = () => {
                 setPlatformFilter(value);
                 setCurrentPage(1);
               }}
-              aria-label="Filtrer par plateforme"
+              aria-label="Filter by platform"
             >
               <SelectTrigger className="w-40">
-                <SelectValue>{platformFilter === 'all' ? 'Toutes plateformes' : platformFilter}</SelectValue>
+                <SelectValue>{platformFilter === 'all' ? 'All plateforms' : platformFilter}</SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Toutes plateformes</SelectItem>
+                <SelectItem value="all">All plateforms</SelectItem>
                 {Object.keys(platformIcons).map(plat => (
                   <SelectItem key={plat} value={plat}>
                     {plat.charAt(0).toUpperCase() + plat.slice(1)}
@@ -204,13 +204,13 @@ const PostsPage = () => {
                 setStatusFilter(value);
                 setCurrentPage(1);
               }}
-              aria-label="Filtrer par statut"
+              aria-label="Filter by status"
             >
               <SelectTrigger className="w-40">
-                <SelectValue>{statusFilter === 'all' ? 'Tous statuts' : statusFilter}</SelectValue>
+                <SelectValue>{statusFilter === 'all' ? 'All status' : statusFilter}</SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tous statuts</SelectItem>
+                <SelectItem value="all">All status</SelectItem>
                 {Object.keys(statusColors).map(status => (
                   <SelectItem key={status} value={status}>
                     {status}
@@ -221,7 +221,7 @@ const PostsPage = () => {
           </div>
 
           <Input
-            placeholder="Filtrer par message"
+            placeholder="Filter by message"
             className="w-full sm:w-1/3"
             value={filter}
             onChange={e => {
@@ -237,11 +237,11 @@ const PostsPage = () => {
             className="flex items-center gap-1"
           >
             <Plus className="w-4 h-4" />
-            Créer un post
+            Create a post
           </Button>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground whitespace-nowrap">Afficher :</span>
+            <span className="text-sm text-muted-foreground whitespace-nowrap">Show :</span>
             <Select
               value={postsPerPage.toString()}
               onValueChange={value => {
@@ -271,9 +271,9 @@ const PostsPage = () => {
         )}
 
         {loading ? (
-          <p className="text-center text-muted-foreground flex-grow">Chargement des publications...</p>
+          <p className="text-center text-muted-foreground flex-grow">Loading posts...</p>
         ) : currentPosts.length === 0 ? (
-          <p className="text-center text-muted-foreground flex-grow">Aucune publication trouvée.</p>
+          <p className="text-center text-muted-foreground flex-grow">No posts found.</p>
         ) : (
           <motion.div
             variants={containerVariants}
@@ -284,10 +284,10 @@ const PostsPage = () => {
             <Table className="min-w-full">
               <TableHeader>
                 <TableRow>
-                  <TableHead>Plateforme</TableHead>
+                  <TableHead>Plateform</TableHead>
                   <TableHead>Message</TableHead>
-                  <TableHead>Date de création</TableHead>
-                  <TableHead>Statut</TableHead>
+                  <TableHead>Creation date</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -327,7 +327,7 @@ const PostsPage = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            aria-label={`Modifier le post ${post.id}`}
+                            aria-label={`Edit post ${post.id}`}
                             onClick={() => {
                               setEditingPost(post);
                               setEditedMessage(post.message);
@@ -338,9 +338,9 @@ const PostsPage = () => {
                           <Button
                             size="sm"
                             variant="destructive"
-                            aria-label={`Supprimer le post ${post.id}`}
+                            aria-label={`Delete this post ${post.id}`}
                             onClick={() => {
-                              if (window.confirm('Voulez-vous vraiment supprimer ce post ?')) {
+                              if (window.confirm('Do you really want to delete this post? ?')) {
                                 handleDelete(post.id);
                               }
                             }}
@@ -364,17 +364,17 @@ const PostsPage = () => {
             disabled={currentPage === 1}
             onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
           >
-            Précédent
+            Previous
           </Button>
           <span>
-            Page {currentPage} sur {totalPages || 1}
+            Page {currentPage} of {totalPages || 1}
           </span>
           <Button
             size="sm"
             disabled={currentPage === totalPages || totalPages === 0}
             onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
           >
-            Suivant
+            Next
           </Button>
         </div>
 
@@ -382,7 +382,7 @@ const PostsPage = () => {
         <Dialog open={!!editingPost} onOpenChange={open => !open && setEditingPost(null)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Modifier la publication</DialogTitle>
+              <DialogTitle>Edit post</DialogTitle>
             </DialogHeader>
             <textarea
               className="w-full p-2 border border-border rounded resize-y min-h-[100px]"
